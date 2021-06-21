@@ -25,13 +25,16 @@ editor_options:
 
 
 ```{r}
-install.packages("maptools", dependencies = TRUE)
-install.packages("spdep", dependencies = TRUE)
-install.packages("leaflet", dependencies = TRUE)
-install.packages("RColorBrewer", dependencies = TRUE)
-
+library(tidyverse)
+library(sf)
+library(tmap)
+library(geojsonio)
+library(sp)
+library(reshape2)
+library(stplanr)
+library(leaflet)
+library(broom)
 library(spdep)
-
 library(maptools)
 
 
@@ -44,9 +47,40 @@ chi.poly <- readShapePoly('foreclosures.shp')
 class(chi.poly)
 
 str(slot(chi.poly,"data"))
+
+summary(chi.poly@data$violent)
+
+```
+
+## introduction to the subject, putting a research hypothesis
+
+```{r}
+
 ```
 
 
+## description of the data - source, spatial diversity, or changes in time
+
 ```{r}
+
+```
+
+## specification of the problem / econometric model and expectations
+
+```{r}
+
+```
+
+## model estimation and diagnostics / spatial quantitative analysis
+
+```{r}
+
+```
+
+## interpretation of results and conclusions
+
+
+```{r}
+
 ```
 
