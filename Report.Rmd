@@ -3,7 +3,7 @@ title: |
  <p align="center">
   <img src="https://www.wne.uw.edu.pl/themes/wne/images/en-logo.gif"></p>  
   <h2 style="color:#660033;" align= "center">**Spatial Econometrics Final Project**</h2>
-subtitle: <h4 style="color:DimGrey;" align= "center">_Spatial Analysis of Liqor Sales in Virginia and North Carolina_</h4>
+subtitle: <h4 style="color:DimGrey;" align= "center">_Spatial Analysis of Liquor Sales in Virginia and North Carolina_</h4>
 author: 
   - <h5 style="color:Grey;" align="center">_Didem Paloglu, 425160_</h5>
   - <h5 style="color:Grey;" align="center">_Huseyin Can Minareci, 417121_</h5>
@@ -26,6 +26,8 @@ editor_options:
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # installing necessary packages
+library(kableExtra)
+library(dplyr)
 library(tidyverse)
 library(sf)
 library(tmap)
@@ -46,24 +48,131 @@ library(rgdal)
 knitr::opts_chunk$set(echo = TRUE)
 
 ```
-## SPATIAL ANALYSIS
 
-<<<<<<< HEAD
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#importing data 
+
+spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
+
+```
+
+### Requirements 
+
+- introduction to the subject, putting a research hypothesis --> DONE
+- description of the data - source, spatial diversity, or changes in time -->> DONE
+- specification of the problem / econometric model and expectations
+- model estimation and diagnostics / spatial quantitative analysis
+- interpretation of results and conclusions
+
+
+
 ## 1. INTRODUCTION
 
 ### 1.1. Aim of the Project
 
-<p style="text-align:justify;">In this project, it is aimed to model liquor demand in Virginia and North Carolina. The original study has been conducted by Mark L. Burkey. With this research, it was aimed to find answer to whether the geographical restrictions on the alcohol make an effect on the alcohol-related problems. We also tried to find the factors that affect the alcohol sales (demand) in traditional way with OLS and also with spatial analysis. 
-
-using data from around 2003. In particular, he looks at the states of Virginia and North Carolina. This dataset is related to, but not the same as data used on an NIH grant and published in a paper: . Bird Strike is common and can be a significant threat to aircraft safety and may be resulted in a number of fatal accidents. By analyzing and understanding the underlying causes and conditions of bird strikes, it can be possible to minimize the damages.</p> 
+<p style="text-align:justify;">In this project, it is aimed to model liquor demand in Virginia and North Carolina. The original study has been conducted by Mark L. Burkey. With his research, it was aimed to find answer whether the geographical restrictions on the alcohol make any effect on the alcohol-related problems. The results have shown that alcohol restrictions did not make any effect on alcohol-related problems. In our project, we tried to find the answer to our research question: Which factors affect the alcohol demand and how geographical alcohol restrictions changes consumer behaviours. We constructed both traditional regression model with OLS (benchmark model) and also spatial models with SAR & SEM. </p> 
 
 
 ### 1.2. Information About Data Set
 
 
-<p style="text-align:justify;">A bird strike is strictly defined as a collision between a bird and an aircraft which is in flight or on a take off or landing roll^[Retrieved from: https://www.skybrary.aero/index.php/Bird_Strike#Accidents_and_Incidents]. It is important to collect the data about bird strikes since it can cause fatal accidents for both passengers and aircraft. In order to analyze the bird strikes, FAA collects the strike data regularly. In this project, the data set contains bird strikes that occurred in US states between 2000-2011. The data set consists of 25558 rows and 26 columns. The variables give information about airports, flight status, damage after the strike and early warning status etc. It is important to analyze underlying reasons of the strikes and preventive actions can be taken after seeing the detailed exploratory analysis. The head of data set 
-is as below (_**Remarks**_ column is not included in this table since it contains long text about strikes and it will not be useful in this table):</p>
+<p style="text-align:justify;">In this project, the data set contains 49 variables. The year of the data set is 2003. The variables give information about geographical features of states as well as demographic features. After importing data set, first we need to know the class of the data set. With `class()` function, we can say that the data set is _"SpatialPolygonsDataFrame"_. We can see the head of the data set in below table: </p>
+
+
+```{r, echo=FALSE}
+head(slot(spadata,"data")) %>%
+  kable(digits = 2, format = "html", row.names = TRUE, caption = "Head of the Data Set") %>%
+  kable_styling(bootstrap_options = c("striped"), font_size = 10) %>%
+  row_spec(row = 0, color = "#660033") %>% 
+  scroll_box(width = "100%")
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+class(spadata)
+```
+
+<br>
+
+<p style="text-align:justify;">Before going deep in the data set, the variables and their descriptions are also important to understand and conduct the analysis. Some variables are clear and easy to understand, but some variables are hard to interpret and we need to understand them. Therefore, all variables and necessary descriptions of the variables are provided below:</p>
+
+All Variables:
+
+```{r echo=FALSE}
+# variable names
+names(spadata)
+```
+
+Descriptions:
+
+* **Lon & Lat:** Longitude and latitude of county centroid
+* **FIPS, FIPS2:** Code for county (Federal Information Processing Standard)
+* **qtystores:** Number of liquor stores in county
+* **SALESPC:** Liquor Sales per capita per year, $
+* **PCI:** Per capita income
+* **COMM15OVP:** % of commuting over 15 minutes to work
+* **COLLENRP:** % of people currently enrolled in college
+* **SOMECOLLP:** % of people with “some college” or higher education level
+* **ARMEDP:** % in armed forces
+* **NONWHITEP:** % of nonwhite people
+* **UNEMPP:** % of unemployed people
+* **ENTRECP** % of employment in entertainment or recreation fields (proxy for tourism areas)
+* **PUBASSTP:** % on public assistance of some sort
+* **POVPOPP:** % in poverty
+* **URBANP:** % of people living in urban areas
+* **FOREIGNBP:** % foreign born
+* **BAPTISTSP:** % of southern baptist (historically anti-alcohol)
+* **ADHERENTSP:** % of adherents of any religion
+* **BKGRTOMIX:** Weighted average distance from block group to nearest bar selling liquor
+* **COUNTMXBV:** Count of bars selling liquor
+* **MXBVSQM:** Bars per square mile
+* **BKGRTOABC:** Distance for block group to nearest retail liquor outlet (“ABC stores”)
+* **MXBVPPOP18:** Bars per 1,000 people 18 and older
+* **DUI1802:** DUI arrests per 1,000 people 18+
+* **FVPTHH02:** Offences against families and children (domestic violence) per 1,000 households
+* **DC,GA, KY, MD, SC, TN, WV, VA:** Dummy variables for counties bordering other states
+* **AREALANDSQ:** Area of county
+* **COUNTBKGR:**  Count of block groups in county
+* **TOTALPOP:** Population of county
+* **POP18OV:** Population of 18+ people in county
+* **LABFORCE:** number of people in labor force in county
+* **HHOLDS:** number of households in county
+* **POP25OV:** Population of 25+ people in county
+* **POP16OV:** Population of 16+ people in county
+
+After having information about variables, we can see the summary of the data set. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(spadata)
+
+```
+<p style="text-align:justify;">From the summary of the data set, some variables like income and population are seen as in wrong format. So, we need to convert these variables into true format (factor to numeric). </p>
+
+```{r message=FALSE, warning=FALSE}
+
+# converting factor variables to numeric variables
+
+spadata$qtystores <- as.numeric(levels(spadata$qtystores))[spadata$qtystores]
+spadata$PCI <- as.numeric(levels(spadata$PCI))[spadata$PCI]
+spadata$COUNTMXBV <- as.numeric(levels(spadata$COUNTMXBV))[spadata$COUNTMXBV]
+spadata$COUNTBKGR <- as.numeric(levels(spadata$COUNTBKGR))[spadata$COUNTBKGR]
+spadata$TOTALPOP <- as.numeric(levels(spadata$TOTALPOP))[spadata$TOTALPOP]
+spadata$POP18OV <- as.numeric(levels(spadata$POP18OV))[spadata$POP18OV]
+spadata$LABFORCE <- as.numeric(levels(spadata$LABFORCE))[spadata$LABFORCE]
+spadata$HHOLDS <- as.numeric(levels(spadata$HHOLDS))[spadata$HHOLDS]
+spadata$POP25OV <- as.numeric(levels(spadata$POP25OV))[spadata$POP25OV]
+spadata$POP16OV <- as.numeric(levels(spadata$POP16OV))[spadata$POP16OV]
+```
+Now, all the variables can be seen in the true formats in below table:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+str(slot(spadata,"data"))
+```
+
+<p style="text-align:justify;"> After variable transformation, the data set is ready for analysis. In the following section, some explonatory data analysis (EDA) will be conducted in order to see the distribution of important factors in the data set.</p>
+
 ### EDA
+
+
 ### Clustering
 ### OLS (Benchmark model)
 ### SAR / SEM 
@@ -71,52 +180,7 @@ is as below (_**Remarks**_ column is not included in this table since it contain
 ### Conclusion
 
 
-=======
 
 
-### Requirements 
-
-- introduction to the subject, putting a research hypothesis
-- description of the data - source, spatial diversity, or changes in time
-- specification of the problem / econometric model and expectations
-- model estimation and diagnostics / spatial quantitative analysis
-- interpretation of results and conclusions
-
-
->>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
-
-### Introduction
-
-```{r}
-<<<<<<< HEAD
-
-NCVACO <- readOGR(".", "NCVACO Variables")
-
-=======
-spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
-class(spadata)
->>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
-```
-
-### EDA
-### Clustering
-### OLS (Benchmark model)
-### SAR /SEM 
-
-```{r}
-names(spadata) 
-```
-
-
-```{r}
-
-str(slot(spadata,"data"))
-
-
-```
-### Diagnostic Tests
-
-
-### Conclusion
 
 
