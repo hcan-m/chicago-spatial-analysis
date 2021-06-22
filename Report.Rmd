@@ -48,6 +48,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ## SPATIAL ANALYSIS
 
+<<<<<<< HEAD
 ## 1. INTRODUCTION
 
 ### 1.1. Aim of the Project
@@ -70,38 +71,51 @@ is as below (_**Remarks**_ column is not included in this table since it contain
 ### Conclusion
 
 
+=======
 
-## introduction to the subject, putting a research hypothesis
+
+### Requirements 
+
+- introduction to the subject, putting a research hypothesis
+- description of the data - source, spatial diversity, or changes in time
+- specification of the problem / econometric model and expectations
+- model estimation and diagnostics / spatial quantitative analysis
+- interpretation of results and conclusions
+
+
+>>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
+
+### Introduction
 
 ```{r}
+<<<<<<< HEAD
 
 NCVACO <- readOGR(".", "NCVACO Variables")
 
+=======
+spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
+class(spadata)
+>>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
 ```
-DENEME
 
-## description of the data - source, spatial diversity, or changes in time
+### EDA
+### Clustering
+### OLS (Benchmark model)
+### SAR /SEM 
 
 ```{r}
-
+names(spadata) 
 ```
-
-## specification of the problem / econometric model and expectations
-
-```{r}
-
-```
-
-## model estimation and diagnostics / spatial quantitative analysis
-
-```{r}
-
-```
-
-## interpretation of results and conclusions
 
 
 ```{r}
 
+str(slot(spadata,"data"))
+
+
 ```
+### Diagnostic Tests
+
+### Conclusion
+
 
