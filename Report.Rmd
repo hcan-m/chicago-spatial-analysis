@@ -49,12 +49,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 #importing data 
 
 spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 
 ```
+
 
 ### Requirements 
 
@@ -63,7 +65,6 @@ spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 - specification of the problem / econometric model and expectations
 - model estimation and diagnostics / spatial quantitative analysis
 - interpretation of results and conclusions
-
 
 
 ## 1. INTRODUCTION
@@ -78,7 +79,6 @@ spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 
 <p style="text-align:justify;">In this project, the data set contains 49 variables. The year of the data set is 2003. The variables give information about geographical features of states as well as demographic features. After importing data set, first we need to know the class of the data set. With `class()` function, we can say that the data set is _"SpatialPolygonsDataFrame"_. We can see the head of the data set in below table: </p>
 
-
 ```{r, echo=FALSE}
 head(slot(spadata,"data")) %>%
   kable(digits = 2, format = "html", row.names = TRUE, caption = "Head of the Data Set") %>%
@@ -89,6 +89,7 @@ head(slot(spadata,"data")) %>%
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 class(spadata)
+
 ```
 
 <br>
