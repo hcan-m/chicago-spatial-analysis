@@ -48,7 +48,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ## SPATIAL ANALYSIS
 
-<<<<<<< HEAD
 ## 1. INTRODUCTION
 
 ### 1.1. Aim of the Project
@@ -63,6 +62,7 @@ using data from around 2003. In particular, he looks at the states of Virginia a
 
 <p style="text-align:justify;">A bird strike is strictly defined as a collision between a bird and an aircraft which is in flight or on a take off or landing roll^[Retrieved from: https://www.skybrary.aero/index.php/Bird_Strike#Accidents_and_Incidents]. It is important to collect the data about bird strikes since it can cause fatal accidents for both passengers and aircraft. In order to analyze the bird strikes, FAA collects the strike data regularly. In this project, the data set contains bird strikes that occurred in US states between 2000-2011. The data set consists of 25558 rows and 26 columns. The variables give information about airports, flight status, damage after the strike and early warning status etc. It is important to analyze underlying reasons of the strikes and preventive actions can be taken after seeing the detailed exploratory analysis. The head of data set 
 is as below (_**Remarks**_ column is not included in this table since it contains long text about strikes and it will not be useful in this table):</p>
+
 ### EDA
 ### Clustering
 ### OLS (Benchmark model)
@@ -83,19 +83,14 @@ is as below (_**Remarks**_ column is not included in this table since it contain
 - interpretation of results and conclusions
 
 
->>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
 
 ### Introduction
 
 ```{r}
-<<<<<<< HEAD
 
-NCVACO <- readOGR(".", "NCVACO Variables")
-
-=======
 spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 class(spadata)
->>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
+
 ```
 
 ### EDA
