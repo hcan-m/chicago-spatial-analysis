@@ -39,6 +39,17 @@ library(maptools)
 
 ```
 
+## SPATIAL ANALYSIS
+
+### Introduction
+### EDA
+### Clustering
+### OLS (Benchmark model)
+### SAR /SEM 
+### Diagnostic Tests
+### Conclusion
+
+
 ```{r}
 
 chi.poly <- readShapePoly('foreclosures.shp')
