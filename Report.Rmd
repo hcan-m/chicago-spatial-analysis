@@ -36,62 +36,48 @@ library(leaflet)
 library(broom)
 library(spdep)
 library(maptools)
+library(rgdal)
 
 ```
 
 ## SPATIAL ANALYSIS
 
+
+
+### Requirements 
+
+- introduction to the subject, putting a research hypothesis
+- description of the data - source, spatial diversity, or changes in time
+- specification of the problem / econometric model and expectations
+- model estimation and diagnostics / spatial quantitative analysis
+- interpretation of results and conclusions
+
+
+
 ### Introduction
+
+```{r}
+spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
+class(spadata)
+```
+
 ### EDA
 ### Clustering
 ### OLS (Benchmark model)
 ### SAR /SEM 
+
+```{r}
+names(spadata) 
+```
+
+
+```{r}
+
+str(slot(spadata,"data"))
+
+
+```
 ### Diagnostic Tests
 ### Conclusion
 
-
-```{r}
-
-chi.poly <- readShapePoly('foreclosures.shp')
-class(chi.poly)
-
-str(slot(chi.poly,"data"))
-
-summary(chi.poly@data$violent)
-
-```
-
-## introduction to the subject, putting a research hypothesis
-
-```{r}
-library(rgdal)
-NCVACO <- readOGR(dsn = ".", layer = "NCVACO")
-
-```
-DENEME
-
-## description of the data - source, spatial diversity, or changes in time
-
-```{r}
-
-```
-
-## specification of the problem / econometric model and expectations
-
-```{r}
-
-```
-
-## model estimation and diagnostics / spatial quantitative analysis
-
-```{r}
-
-```
-
-## interpretation of results and conclusions
-
-
-```{r}
-
-```
 
