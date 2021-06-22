@@ -40,6 +40,8 @@ library(broom)
 library(spdep)
 library(maptools)
 library(rgdal)
+library(shape)
+library(RColorBrewer)
 
 ```
 
@@ -171,7 +173,54 @@ str(slot(spadata,"data"))
 
 <p style="text-align:justify;"> After variable transformation, the data set is ready for analysis. In the following section, some explonatory data analysis (EDA) will be conducted in order to see the distribution of important factors in the data set.</p>
 
-### EDA
+### 1.3. Explonatory Data Analysis (EDA)
+
+<p style="text-align:justify;">EDA is important tool to see the general picture of the data set. In this section, EDA has been applied as preliminary analysis. First analysis, obviously, to look at the dependent vairable in the model. Liqour sales (SALESPC) is the dependent variable in the data set. The visualization of the liqour sales density in geographic map as below:</p>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+variable<-spadata$SALESPC
+maxy<-300
+breaks<-c(0, 50, 100, 150, 200, 250, 300) # used in the legend 
+nclr<-7
+plotclr<-brewer.pal(nclr, "Reds") # from the RColorBrewer package 
+fillRed<-colorRampPalette(plotclr) # from the grDevices package 
+colcode<-fillRed(maxy)[round(variable) + 1] # fillRed is a function 
+plot(spadata, col=colcode , lwd=1,border="gray70") 
+
+colorlegend(posy=c(0.05,0.9), posx=c(0.9,0.92), col=fillRed(maxy), zlim=c(0, maxy), zval=breaks, main.cex=0.9) # from the shape:: package
+
+title(main="Liqour Sales Per Capita Per Year ($)\n in Virginia and North Carolina")
+```
+
+<br> 
+
+<p style="text-align:justify;">From the figure, the top map represents Virginia and bottom map represents North Carolina. We can see that highest sales have occured in East North Carolina. Moreover, for both states the liqour sales are generally low (mostly between 0-150$).</p>
+
+***
+
+Second insight 
+
+```{r}
+library(sf)
+spadata.sf <- st_read("NCVACO Variables.shp")
+spadata.sf<- st_transform(spadata.sf, CRS("+proj=longlat +datum=NAD83")) 
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(spadata.sf, mapping = aes(geometry=geometry, fill = TOTALPOP)) +
+  labs(title = "Population Density in Virginia and North Carolina",
+       fill = "Total Population") +
+  annotate("text", x = -83, y = 39, size = 5, 
+           color = "red", alpha = 0.4, label = "Virginia") +
+  annotate("text", x = -82, y = 34, size = 5, 
+           color = "red", alpha = 0.4, label = "North Carolina") +
+  theme(panel.background = element_blank())
+
+```
 
 
 ### Clustering
@@ -180,6 +229,138 @@ str(slot(spadata,"data"))
 ### Diagnostic Tests
 ### Conclusion
 
+<!-- CAN'S PART -->
+
+### preparing spatial weights matrix
+Queen criterion: two units are close if they share a side or an edge.
+Rook criterion: two units are close to one another if they share a side
+
+
+```{r}
+nbrqueen <- poly2nb(spadata, row.names = spadata$FIPS)
+nbrrook  <- poly2nb(spadata, queen=FALSE) 
+```
+
+```{r}
+moranTest <- moran.test(spadata$SALESPC, nb2listw(nbrqueen))
+moranTest
+```
+
+### OLS (Benchmark model)
+
+```{r}
+ols <- lm(DUI1802 ~ SALESPC + COLLENRP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP, data = spadata)
+summary(ols)
+```
+
+
+```{r}
+
+# diagnostics of linear model
+library(lmtest)
+bptest(ols) # heteroscedasticity test (H1) /homoscedast…(H0)
+
+```
+
+P-value is 0.20 so we cannot reject H0 homoscedasticity which means we have heteroscedasticity
+
+
+
+```{r}
+
+# Ramsey’s test for functional form
+# H1: when non-linear variables (like powers of the variables) should be included then model is mis-specified
+resettest(ols, power=2, type="regressor") 	
+```
+
+p-value is 0.06 so we cannot reject H0, This indicates that the functional form is correct and our model does not suffer from omitted variables.
+
+### Moran Correlation Test
+
+H0: No spatial correlation in the residuals
+
+
+```{r}
+lmMoranTest <- lm.morantest(ols,nb2listw(nbrqueen)) # are residuals spatially random?
+lmMoranTest
+
+```
+
+p-value is very small so we have to reject null hypothesis and Moran's Statistic is 0.19 which means that there is a significant evidence that positive spatial correlation exists between the residuals and we should use a spatial model.
+
+# Moran scatterplot
+```{r}
+# preparing the data
+x<-spadata$DUI1802 # variable selection
+zx<-as.data.frame(scale(x))  #standardization of variable
+
+# Moran scatterplot – automatic version
+moran.plot(zx$V1, nb2listw(nbrqueen), pch=19, labels=as.character(spadata$NAME))
+
+```
+
+
+```{r}
+# test join.count for residuals (positive vs. negative)
+resid<-factor(cut(res, breaks=c(-100, 0, 100), labels=c("negative","positive")))
+joincount.test(resid, nb2listw(nbrqueen))
+```
+
+
+```{r}
+
+# spatial distribution of OLS residuals
+summary(ols$residuals)
+res<-ols$residuals
+brks<-c(min(res), mean(res)-sd(res), mean(res), mean(res)+sd(res), max(res))
+cols<-c("steelblue4","lightskyblue","thistle1","plum3")
+plot(spadata, col=cols[findInterval(res,brks)])
+#plot(woj, add=TRUE, lwd=2)
+title(main="Spatial Distribution of OLS Residuals")
+legend("bottomleft", legend=c("<mean-sd", "(mean-sd, mean)", "(mean, mean+sd)", ">mean+sd"), leglabs(brks1), fill=cols, bty="n")
+
+
+```
+
+
+Emin degilim buna gerek var mi ama dursun simdilik burada :D
+ ```{r}
+# # OLS model
+# model<-glm(DUI1802 ~ SALESPC + COLLENRP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP, data = spadata)
+# summary(model)
+# ```
+# ```{r}
+# SRMSE<-sqrt(sum((model$fitted.values-spadata$DUI1802)^ 2)/ dim(spadata)[1]) / (mean(spadata$DUI1802))
+# SRMSE
+# ```
+
+# ```{r}
+# plot(spadata$SALESPC, spadata$DUI1802)
+# points(spadata$SALESPC, model$fitted.values, col="red")
+# abline(h=1, lty=3)
+# title(main="OLS, multinominal, fitted values")
+ ```
+
+what next...
+
+
+### SAR /SEM 
+
+```{r}
+names(spadata) 
+```
+
+
+```{r}
+
+str(slot(spadata,"data"))
+
+
+```
+### Diagnostic Tests
+
+
+### Conclusion
 
 
 
