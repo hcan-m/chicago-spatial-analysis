@@ -37,8 +37,6 @@ library(broom)
 library(spdep)
 library(maptools)
 
-
-
 ```
 
 ```{r}
@@ -55,9 +53,11 @@ summary(chi.poly@data$violent)
 ## introduction to the subject, putting a research hypothesis
 
 ```{r}
+library(rgdal)
+NCVACO <- readOGR(dsn = ".", layer = "NCVACO")
 
 ```
-
+DENEME
 
 ## description of the data - source, spatial diversity, or changes in time
 
