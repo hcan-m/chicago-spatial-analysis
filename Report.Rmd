@@ -3,7 +3,7 @@ title: |
  <p align="center">
   <img src="https://www.wne.uw.edu.pl/themes/wne/images/en-logo.gif"></p>  
   <h2 style="color:#660033;" align= "center">**Spatial Econometrics Final Project**</h2>
-subtitle: <h4 style="color:DimGrey;" align= "center">_Violent Crimes and foreclosures in the Chicago_</h4>
+subtitle: <h4 style="color:DimGrey;" align= "center">_Spatial Analysis of Liqor Sales in Virginia and North Carolina_</h4>
 author: 
   - <h5 style="color:Grey;" align="center">_Didem Paloglu, 425160_</h5>
   - <h5 style="color:Grey;" align="center">_Huseyin Can Minareci, 417121_</h5>
@@ -24,7 +24,8 @@ editor_options:
 
 
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# installing necessary packages
 library(tidyverse)
 library(sf)
 library(tmap)
@@ -40,8 +41,37 @@ library(rgdal)
 
 ```
 
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
 ## SPATIAL ANALYSIS
 
+<<<<<<< HEAD
+## 1. INTRODUCTION
+
+### 1.1. Aim of the Project
+
+<p style="text-align:justify;">In this project, it is aimed to model liquor demand in Virginia and North Carolina. The original study has been conducted by Mark L. Burkey. With this research, it was aimed to find answer to whether the geographical restrictions on the alcohol make an effect on the alcohol-related problems. We also tried to find the factors that affect the alcohol sales (demand) in traditional way with OLS and also with spatial analysis. 
+
+using data from around 2003. In particular, he looks at the states of Virginia and North Carolina. This dataset is related to, but not the same as data used on an NIH grant and published in a paper: . Bird Strike is common and can be a significant threat to aircraft safety and may be resulted in a number of fatal accidents. By analyzing and understanding the underlying causes and conditions of bird strikes, it can be possible to minimize the damages.</p> 
+
+
+### 1.2. Information About Data Set
+
+
+<p style="text-align:justify;">A bird strike is strictly defined as a collision between a bird and an aircraft which is in flight or on a take off or landing roll^[Retrieved from: https://www.skybrary.aero/index.php/Bird_Strike#Accidents_and_Incidents]. It is important to collect the data about bird strikes since it can cause fatal accidents for both passengers and aircraft. In order to analyze the bird strikes, FAA collects the strike data regularly. In this project, the data set contains bird strikes that occurred in US states between 2000-2011. The data set consists of 25558 rows and 26 columns. The variables give information about airports, flight status, damage after the strike and early warning status etc. It is important to analyze underlying reasons of the strikes and preventive actions can be taken after seeing the detailed exploratory analysis. The head of data set 
+is as below (_**Remarks**_ column is not included in this table since it contains long text about strikes and it will not be useful in this table):</p>
+### EDA
+### Clustering
+### OLS (Benchmark model)
+### SAR / SEM 
+### Diagnostic Tests
+### Conclusion
+
+
+=======
 
 
 ### Requirements 
@@ -53,12 +83,19 @@ library(rgdal)
 - interpretation of results and conclusions
 
 
+>>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
 
 ### Introduction
 
 ```{r}
+<<<<<<< HEAD
+
+NCVACO <- readOGR(".", "NCVACO Variables")
+
+=======
 spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 class(spadata)
+>>>>>>> f0d2c1d836ad8981e291bd9bdd019ea22e090b67
 ```
 
 ### EDA
