@@ -44,6 +44,8 @@ library(shape)
 library(RColorBrewer)
 library(lmtest)
 library(spatialreg)
+library(textreg)
+
 ```
 
 ```{r setup, include=FALSE}
@@ -516,7 +518,7 @@ SAC_1<-sacsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP
 summary(SAC_1)
 ```
 
-As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see that still rho and lambda are insignificant. AIC: 1144.8 which is smaller than AIC's of Monski model. It means our model is getting better.
+As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC's of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well. We will continue to check the rest models to see if we can improve our results.
 
 
 <!-- 2021-04-19 Class 08 - Practice of spatial dependency models  20:00 -->
@@ -538,7 +540,7 @@ SEM_1<-errorsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTIST
 summary(SEM_1)
 ```
 
-In SEM - spatial error model we omit both rho and theta. And from results we can see that AIC: 1149 which is bigger that SAC / SARAR Model.
+In SEM - spatial error model we eliminate both rho and theta and lambda is significant. And from results we can see that this model has AIC: 1149 which is bigger that SAC / SARAR Model's AIC.
 
 <!-- # SAR - spatial lag model -->
 <!-- # normally includes spatial lag of Y only (with rho coefficient) -->
@@ -553,7 +555,7 @@ SAR - spatial lag model normally includes spatial lag of Y only (with rho coeffi
 SAR_1<-lagsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw) # no spatial lags of X
 summary(SAR_1)
 ```
-Same model without theta coefficants performed better with AIC 1145.9 but still it is slightly bigger than SAC / SARAR model's AIC which is 1144.8.
+Same model without theta coefficants performed better with AIC 1145.9 as well but still it is slightly bigger than SAC / SARAR model's AIC which is 1144.8.
 
 
 <!-- # from errorsarlm() library -->
@@ -564,6 +566,15 @@ SLX_1<-lmSLX(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + 
              listw=cont.listw)
 summary(SLX_1)
 ```
+In here we checked an ‘lm’ model augmented with the spatially lagged RHS variables which didn't perform well.
+
+```{r}
+screenreg(list(GNS_1,SAC_1,SDM_1,SAR_1,SEM_1,SLX_1))
+```
+
+
+After seeing all model results we would like to choose our final model as SAC / SARAR model but in order to do so we need to do proper Likelihood ratio test first to see if it is indeed would be a good choice.
+
 
 ### 2.5. Diagnostic Tests
 
@@ -572,23 +583,34 @@ summary(SLX_1)
 <!-- # H1 – unrestricted (wider) model is better -->
 <!-- # df in chi2 is the number of restricted parameters -->
 ```{r message=FALSE, warning=FALSE}
-LR.sarlm(GNS_1, SDM_1)
-LR.sarlm(GNS_1, SDEM_1)
-LR.sarlm(GNS_1, SLX_1)
-LR.sarlm(SDM_1, SAR_1)
-LR.sarlm(SDM_1, SEM_1)
-LR.sarlm(SDM_1, SLX_1)
-LR.sarlm(SDEM_1, SLX_1)
-#lrtest(model.lm, SLX_1)
+LR.sarlm(GNS_1, SAC_1)
+LR.sarlm(SAC_1, SAR_1)
+LR.sarlm(SAC_1, SEM_1)
 
+??LR.sarlm
 ```
 
-We reject all H0s which means unrestricted model is better(?????)
+In the first test we compare Manski model with SAC / SARAR model and we cannot reject H0 with p-value 0.5661 which means narrower model is better and in this case SAC / SAR model is narrower.  
+
+In the second test we compare SAC / SAR model with SARAR (Spatial Lag Model) and our p-value is 0.07981 and we think that we can reject H0 since it is below 0.1 significant level which means wider model is better and in this case SAC / SAR model is wider.
+
+In the last test we compare SAC / SARAR model with SEM (Spatial Error Model) and we reject H0 with p-value 0.01292 which means wider model is better and in this case SAC / SAR model is wider.
+
 
 ## 2.6 Final Model
 
+SAC / SARAR model - includes spatial lag of Y, spatial error term
 
 
+```{r message=FALSE, warning=FALSE}
+
+# SAC / SARAR model - includes spatial lag of Y, spatial error term
+SAC_1<-sacsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw)
+summary(SAC_1)
+```
+
+## TO-DO: re-write the final model explanation
+As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC's of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well. We will continue to check the rest models to see if we can improve our results.
 
 ## 3. CONCLUSION
 
