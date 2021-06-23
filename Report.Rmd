@@ -44,7 +44,7 @@ library(shape)
 library(RColorBrewer)
 library(lmtest)
 #library(spatialreg)
-library(stargazer)
+
 ```
 
 ```{r setup, include=FALSE}
