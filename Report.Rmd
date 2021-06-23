@@ -43,7 +43,6 @@ library(rgdal)
 library(shape)
 library(RColorBrewer)
 library(lmtest)
-#library(spatialreg)
 
 ```
 
@@ -157,7 +156,7 @@ spadata$HHOLDS <- as.numeric(levels(spadata$HHOLDS))[spadata$HHOLDS]
 spadata$POP25OV <- as.numeric(levels(spadata$POP25OV))[spadata$POP25OV]
 spadata$POP16OV <- as.numeric(levels(spadata$POP16OV))[spadata$POP16OV]
 
-# 
+
 # spadata$qtystores <- as.numeric(spadata$qtystores)
 # spadata$PCI <- as.numeric(spadata$PCI)
 # spadata$COUNTMXBV <- as.numeric(spadata$COUNTMXBV)
@@ -331,7 +330,7 @@ plot(spa.knn.nb, crds, add=TRUE)
 # creating symettric knn neighbours matrix
 
 spa.sym.knn.nb<-make.sym.nb(spa.knn.nb)
-print(is.symmetric.nb(spa.sym.knn.nb))
+# print(is.symmetric.nb(spa.sym.knn.nb))
 
 ```
 
@@ -347,7 +346,7 @@ spa.sym.knn.listw
 <p style="text-align:justify;">Lastly, we can calculate at what distance all units have at least one neighbour. At 0.7975231 km, all units have at least one neighbour. This neighborhood is concentrated in eastern Virginia.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-# implicitly k=3, list of closests neighbours
+#  k=3, list of closests neighbours
 kkk<-knn2nb(knearneigh(crds, k=3)) 
 
 # max of distances between clostests neighbours (0.7975231)
@@ -429,7 +428,7 @@ bptest(ols) # heteroscedasticity (H1) /homoscedastic (H0)
 
 H1: when non-linear variables (like powers of the variables) should be included then model is mis-specified
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 resettest(ols, power=2, type="regressor") 	
 ```
 
