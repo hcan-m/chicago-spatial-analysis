@@ -359,7 +359,7 @@ moranTest
 ols <- lm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata)
 summary(ols)
 ```
-<<<<<<< HEAD
+
 
 ```{r}
 ols_I <- lm.morantest(ols, cont.listw)
@@ -367,10 +367,10 @@ ols_LM <- lm.LMtests(ols, cont.listw, test = "all")
 print(ols_LM)
 ```
 
-=======
+
 We can see from our model BKGRTOABC   ENTRECP      UNEMPP       significant and DUI1802 could be in 0.1 interval
  R-squared:  0.4572 which is quite okay.
->>>>>>> d0f58b8d0c8ad4fd87d5fe1019f55bb9edd8f0e5
+
 
 ```{r}
 
@@ -473,9 +473,7 @@ what next...
 
 
 ### SAR /SEM 
-<<<<<<< HEAD
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-=======
+
 
 GNS: Y= \rho WY+Xβ+WX\theta+u and u= \lambda Wu+e
 
@@ -488,8 +486,8 @@ We wanted to start with Monski model to see what we should expect from our model
 
 ### Monski Model
 
-```{r}
->>>>>>> d0f58b8d0c8ad4fd87d5fe1019f55bb9edd8f0e5
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
 # Estimation of spatial models with 3,2, or 1 spatial components
 
 # Manski model (full specification) - includes spatial lag of Y (rho), 
@@ -498,15 +496,13 @@ We wanted to start with Monski model to see what we should expect from our model
 GNS_1<-sacsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, type="sacmixed", method="LU")  # method="LU" speeds up computations
 summary(GNS_1)
 ```
-<<<<<<< HEAD
 
-```{r message=FALSE, warning=FALSE}
-=======
+
 SOMECOLLP, BKGRTOABC, BAPTISTSP, BKGRTOMIX, ENTRECP, UNEMPP significant and if it comes to thetas just thetas of BAPTISTSP significant while the rest is insignificant. We can also see from the result that Rho and Lambda are insignificant as well and model's AIC is 2377.8, which we are seeking for the smallest AIC for the best model. Since AIC for lm is bigger than AIC we should continue to search for spatial model.
 
 
-```{r}
->>>>>>> d0f58b8d0c8ad4fd87d5fe1019f55bb9edd8f0e5
+```{r message=FALSE, warning=FALSE}
+
 # SAC / SARAR model - includes spatial lag of Y, spatial error term
 SAC_1<-sacsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw)
 summary(SAC_1)
