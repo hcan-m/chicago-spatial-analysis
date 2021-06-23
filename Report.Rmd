@@ -506,7 +506,7 @@ summary(GNS_1)
 ```
 
 
-DUI1802, ENTRECP significant while the rest are insignificant and if it comes to thetas all of them are insignificant. We can also see from the result that Rho and Lambda are insignificant as well and model's AIC is 1156.2, which we are seeking for the smallest AIC for the best model. Since AIC for lm is bigger than AIC we should continue to search for spatial model.
+DUI1802, ENTRECP significant while the rest are insignificant and if it comes to thetas all of them are insignificant. We can also see from the result that Rho and Lambda are insignificant as well and model's AIC is 1156.2, which we are seeking for the smallest AIC for the best model. 
 
 
 ```{r message=FALSE, warning=FALSE}
@@ -516,10 +516,9 @@ SAC_1<-sacsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP
 summary(SAC_1)
 ```
 
-As we can see in this model thetas disappeared from result as planned. DUI1802 BKGRTOABC BAPTISTSP BKGRTOMIX ENTRECP UNEMPP significant. And we can see this time rho and lambda are significant as well. AIC: 2375.2 which is smaller than AIC for LM still.
+As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see that still rho and lambda are insignificant. AIC: 1144.8 which is smaller than AIC's of Monski model. It means our model is getting better.
 
 
-<!-- ## TO-DO: add what to do when rho and lambda significant. -->
 <!-- 2021-04-19 Class 08 - Practice of spatial dependency models  20:00 -->
 
 
@@ -530,10 +529,16 @@ As we can see in this model thetas disappeared from result as planned. DUI1802 B
 SDEM_1<-errorsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw, etype="emixed") # with spatial lags of X
 summary(SDEM_1)
 ```
+
+In this thetas came back and we omit rho this time. This model has AIC: 1154.8 which is bigger than SAC / SARAR Model which means it is worst than previous model. So we decided to move forward.
+
+
 ```{r message=FALSE, warning=FALSE}
 SEM_1<-errorsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw) # no spat-lags of X
 summary(SEM_1)
 ```
+
+In SEM - spatial error model we omit both rho and theta. And from results we can see that AIC: 1149 which is bigger that SAC / SARAR Model.
 
 <!-- # SAR - spatial lag model -->
 <!-- # normally includes spatial lag of Y only (with rho coefficient) -->
@@ -542,10 +547,15 @@ summary(SEM_1)
 SDM_1<-lagsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw, type="mixed") # with spatial lags of X
 summary(SDM_1)
 ```
+SAR - spatial lag model normally includes spatial lag of Y only (with rho coefficient) but with option type="mixed" we activated spatial lags of X (with theta coeff.) And AIC is 1154.4 which is bigger than SAC / SARAR Model.
+
 ```{r message=FALSE, warning=FALSE}
 SAR_1<-lagsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw) # no spatial lags of X
 summary(SAR_1)
 ```
+Same model without theta coefficants performed better with AIC 1145.9 but still it is slightly bigger than SAC / SARAR model's AIC which is 1144.8.
+
+
 <!-- # from errorsarlm() library -->
 <!-- # an ‘lm’ model augmented with the spatially lagged RHS variables -->
 <!-- # RHS variables – right-hand side variables -->
@@ -572,6 +582,11 @@ LR.sarlm(SDEM_1, SLX_1)
 #lrtest(model.lm, SLX_1)
 
 ```
+
+We reject all H0s which means unrestricted model is better(?????)
+
+## 2.6 Final Model
+
 
 
 
