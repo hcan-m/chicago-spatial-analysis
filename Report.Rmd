@@ -266,13 +266,13 @@ title(main="Arrastment Density from DUI in\n Virginia and North Carolina")
 <p style="text-align:justify;">After getting main insight about important indicators, the next section introduce modelling of the data set. We will first construct a traditonal OLS model as benchmark. After OLS, acording to diagnostic test results, we will construct spatial models. </p>
 
 
-## MODELING
+## 2. MODELING
 
-Before jumping construction of models, first we need a spatial weight matrix for spatial models in the following part of the model. 
+<p style="text-align:justify;">Before jumping construction of models, first we need a spatial weight matrix for spatial models in the following part of the model. </p>
 
-### Preparing Spatial Weights Matrix
+### 2.1. Preparing Spatial Weights Matrix
 
-Structure of the neighborhood is key factor while constructing a spatial model. In our analysis, we tried to create few neighborhood matrix which are contiguity matrix and k nearest neighbors (knn) matrix. We also checked neighbours for symmetry. 
+<p style="text-align:justify;">Structure of the neighborhood is key factor while constructing a spatial model. In our analysis, we tried to create few neighborhood matrix which are contiguity matrix and k nearest neighbors (knn) matrix. We also checked neighbours for symmetry. </p>
 
 The result of the contiguity matrix is provided below: 
 
@@ -300,7 +300,7 @@ plot(spadata) # contour map
 plot(cont.nb, crds, add=TRUE)
 ```
 
-Secondly, we created spatial weights matrix with k nearest neighbours. The number of closest neighbours is selected 3. The result map is provided below:
+<p style="text-align:justify;">Secondly, we created spatial weights matrix with k nearest neighbours. The number of closest neighbours is selected 3. The result map is provided below:</p>
 
 ```{r echo=FALSE}
 spa.knn<-knearneigh(crds, k=3) # knn class (k=3)
@@ -310,9 +310,12 @@ plot(spa.knn.nb, crds, add=TRUE)
 
 ```
 
-We can check whether the negihbourhood matrix is symmetric. The symmetry test shows that, the matrix is not symmetric since the test result gives `r print(is.symmetric.nb(spa.knn.nb))`. We can turn it to syymetric matrix as below:
+<p style="text-align:justify;">We can check whether the negihbourhood matrix is symmetric. The symmetry test shows that, the matrix is not symmetric since the test result gives FALSE. We can turn it to syymetric matrix as below:</p>
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
+
+# print(is.symmetric.nb(spa.knn.nb)) --> checking symmetry of matrix
+
 # creating symettric knn neighbours matrix
 
 spa.sym.knn.nb<-make.sym.nb(spa.knn.nb)
@@ -320,7 +323,7 @@ print(is.symmetric.nb(spa.sym.knn.nb))
 
 ```
 
-We can also save symmetric matrix as listw class. The results below shows that average number of links is nearly 3.6.
+<p style="text-align:justify;">We can also save symmetric matrix as **listw** class. The results below shows that average number of links is nearly 3.6.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # knn as listw class
@@ -329,7 +332,7 @@ spa.sym.knn.listw
 
 ```
 
-Lastly, we can calculate at what distance all units have at least one neighbour. At 0.7975231 km, all units have at least one neighbour. 
+<p style="text-align:justify;">Lastly, we can calculate at what distance all units have at least one neighbour. At 0.7975231 km, all units have at least one neighbour. This neighborhood is concentrated in eastern Virginia.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # implicitly k=3, list of closests neighbours
@@ -346,68 +349,87 @@ plot(spadata, border="grey")
 plot(all.nb, crds, add=TRUE)
 ```
 
-A measure of global spatial autocorrelation: Moran's I 
+<p style="text-align:justify;">After calculating spatial weights matrix and showing neighbourhood, it is time to construct different models.</p>
 
-```{r echo=FALSE}
-moranTest <- moran.test(spadata$SALESPC, cont.listw)
-moranTest
-```
+### 2.2. OLS 
 
-### OLS (Benchmark model)
+<p style="text-align:justify;">First step is constructing a non-spatial model with OLS. After model construction,we will test its residuals against spatial autocorrelation by Moran's I test. Moran's I is a measure of spatial autocorrelation–how related the values of a variable are based on the locations where they were measured. </p>
+
+<p style="text-align:justify;">The base model is constructed with variables that are thought to be important for alcohol sales. The model is provided below: </p>
 
 ```{r}
+# significant denemeleri 
+ols <- lm(SALESPC ~ qtystores + COMM15OVP+ BKGRTOABC   + ENTRECP + UNEMPP + PCI +ADHERENTSP+LABFORCE, data = spadata)
+
+```
+
+
+```{r}
+
 ols <- lm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata)
+
+```
+
+The output of the model is provided below: 
+
+```{r echo=FALSE, warning=FALSE}
 summary(ols)
 ```
 
+<p style="text-align:justify;">From the result of the model, DUI1802 (significant for significance level 0.1), BKGRTOABC, ENTRECP, UNEMPP variables are seen as significant variables. This shows that urban population has no effect on the alcohol sales. Moreover, The higher education, number of southern baptists, weighted average distance to nearest bar selling liquor, income per capita, and offense against families and children do not have a significant effect on liquor sales. R-squared is 0.4572, which is quite okay.</p>
 
-```{r}
+
+<p style="text-align:justify;">Now, we will test our model residuals' autocorrelation with Moran's I test. In addition to Moran's tests, Lagrange Multiplier test is also provided below. It is important to see the significance or misspecification of the constructed models. </p>
+
+#### 2.2.1. Moran Correlation Test
+
+H0: No spatial correlation in the residuals
+
+```{r message=FALSE, warning=FALSE}
+
+# Moran's I test
 ols_I <- lm.morantest(ols, cont.listw)
+print(ols_I)
+```
+
+Moran’s I statistic is not significant (p >0.05) Moran's Statistic is ~0.033 which means that there is a insignificant evidence that positive spatial correlation exists between the residuals and we should use a spatial model(!!!!). So, it means that spatial autocorrelation does not exist. We can keep OLS.(!!!) 
+
+#### 2.2.2. Lagrange Multiplier Test
+
+```{r message=FALSE, warning=FALSE}
+
+#Lagrange Multiplier Test
+
 ols_LM <- lm.LMtests(ols, cont.listw, test = "all")
 print(ols_LM)
 ```
 
+The LM test results shows the significance of linear model and its lagged model, their robust version and SARMA model. When we look at the linear model significance, the robust linear model with lag is better than classic linear model (and with lag). Also, SARMA model is significant according to test result. 
 
-We can see from our model BKGRTOABC   ENTRECP      UNEMPP       significant and DUI1802 could be in 0.1 interval
- R-squared:  0.4572 which is quite okay.
+#### 2.2.3. Other Diagnostic Tests for OLS
 
-
+##### 2.2.3.1. Breusch-Pagan Test for Heteroscedasticity
 ```{r}
 
-# diagnostics of linear model
-
-bptest(ols) # heteroscedasticity test (H1) /homoscedast…(H0)
+bptest(ols) # heteroscedasticity (H1) /homoscedastic (H0)
 
 ```
 
-P-value is 0.001 so we reject H0 homoscedasticity which means we have homoscedasticity.
+P-value is 0.001 so we reject H0 homoscedasticity which means we have heteroscedasticity.
 
+##### 2.2.3.2. Ramsey’s Test for Functional Form
 
+H1: when non-linear variables (like powers of the variables) should be included then model is mis-specified
 
 ```{r}
-
-# Ramsey’s test for functional form
-# H1: when non-linear variables (like powers of the variables) should be included then model is mis-specified
 resettest(ols, power=2, type="regressor") 	
 ```
 
 p-value is 0.02517 so we reject H0, This indicates that the functional form is correct and our model does not suffer from omitted variables.
 
-### Moran Correlation Test
+##### 2.2.3.3. Moran Scatter Plot
 
-H0: No spatial correlation in the residuals
-
-
-```{r}
-lmMoranTest <- lm.morantest(ols,cont.listw) # are residuals spatially random?
-lmMoranTest
-
-```
-
-p-value is very small so we have to reject null hypothesis and Moran's Statistic is  -0.005 which means that there is a significant evidence that negative spatial correlation exists between the residuals and we should use a spatial model.
-
-# Moran scatterplot
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # preparing the data
 x<-spadata$SALESPC # variable selection
 zx<-as.data.frame(scale(x))  #standardization of variable
@@ -417,19 +439,18 @@ moran.plot(zx$V1, cont.listw, pch=19, labels=as.character(spadata$NAME))
 
 ```
 
-We can see on the Moran scatterplot how our dependent variable's spatial correlation  
+We can see on the Moran scatter plot how our dependent variable's spatial correlation. We can also cluster negatives and positives next to each other and check how they correlate. In order to do that we took the residuals and cluster them and after that we used join count test.
 
-We can also cluster negatives and positives next to each other and check how they correlate. In order to do that we took the residuals and cluster them and after that we used join count test.
-
-```{r eval=FALSE, include=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # test join.count for residuals (positive vs. negative)
+res<-ols$residuals
 resid<-factor(cut(res, breaks=c(-200, 0, 200), labels=c("negative","positive")))
 joincount.test(resid, cont.listw)
 ```
 
 We can see from the results that negative residuals has spatial correlation from other hand we don't have the statistically proof to say the same thing for the positive values. And we decided to use spatial models because according to Moran test there is a spatial correlation between residuals and there is spatial correlation between negative ones as well.
 
-```{r eval=FALSE, include=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 # spatial distribution of OLS residuals
 summary(ols$residuals)
@@ -443,7 +464,9 @@ legend("bottomleft", legend=c("<mean-sd", "(mean-sd, mean)", "(mean, mean+sd)", 
 
 
 ```
-```{r eval=FALSE, include=FALSE}
+
+
+```{r echo=FALSE}
 # test join.count for residuals (positive vs. negative)
 resid<-factor(cut(res, breaks=c(-200, 0, 200), labels=c("negative","positive")))
 joincount.test(resid, cont.listw)
@@ -471,8 +494,9 @@ Emin degilim buna gerek var mi ama dursun simdilik burada :D
 
 what next...
 
+***
 
-### SAR /SEM 
+### 2.3. SAR /SEM 
 
 
 GNS: Y= \rho WY+Xβ+WX\theta+u and u= \lambda Wu+e
@@ -484,7 +508,7 @@ lambda spatial lag of error term (in order to get random term which is epsilon)
 
 We wanted to start with Monski model to see what we should expect from our model.
 
-### Monski Model
+### 2.4. Monski Model
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -511,13 +535,13 @@ summary(SAC_1)
 As we can see in this model thetas disappeared from result as planned. DUI1802 BKGRTOABC BAPTISTSP BKGRTOMIX ENTRECP UNEMPP significant. And we can see this time rho and lambda are significant as well. AIC: 2375.2 which is smaller than AIC for LM still.
 
 
-## TO-DO: add what to do when rho and lambda significant.
-2021-04-19 Class 08 - Practice of spatial dependency models  20:00
+<!-- ## TO-DO: add what to do when rho and lambda significant. -->
+<!-- 2021-04-19 Class 08 - Practice of spatial dependency models  20:00 -->
 
 
-# SEM - spatial error model
-# typically includes spatial error term only (with lambda coefficient)
-# option etype="emixed" activates spatial lags of X (with theta coeff.) # what makes spatial Durbin error model
+<!-- # SEM - spatial error model -->
+<!-- # typically includes spatial error term only (with lambda coefficient) -->
+<!-- # option etype="emixed" activates spatial lags of X (with theta coeff.) # what makes spatial Durbin error model -->
 ```{r message=FALSE, warning=FALSE}
 SDEM_1<-errorsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, etype="emixed") # with spatial lags of X
 summary(SDEM_1)
@@ -527,9 +551,9 @@ SEM_1<-errorsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTO
 summary(SEM_1)
 ```
 
-# SAR - spatial lag model
-# normally includes spatial lag of Y only (with rho coefficient)
-# option type="mixed" activates spatial lags of X (with theta coeff.)
+<!-- # SAR - spatial lag model -->
+<!-- # normally includes spatial lag of Y only (with rho coefficient) -->
+<!-- # option type="mixed" activates spatial lags of X (with theta coeff.) -->
 ```{r message=FALSE, warning=FALSE}
 SDM_1<-lagsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, type="mixed") # with spatial lags of X
 summary(SDM_1)
@@ -538,17 +562,20 @@ summary(SDM_1)
 SAR_1<-lagsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw) # no spatial lags of X
 summary(SAR_1)
 ```
-# from errorsarlm() library
-# an ‘lm’ model augmented with the spatially lagged RHS variables
-# RHS variables – right-hand side variables
+<!-- # from errorsarlm() library -->
+<!-- # an ‘lm’ model augmented with the spatially lagged RHS variables -->
+<!-- # RHS variables – right-hand side variables -->
 ```{r message=FALSE, warning=FALSE}
 SLX_1<-lmSLX(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw)
 summary(SLX_1)
 ```
-# LR (likelihood ratio) test - compares nested restricted model
-# H0 – restricted (narrower) model is better
-# H1 – unrestricted (wider) model is better
-# df in chi2 is the number of restricted parameters
+
+### 2.5. Diagnostic Tests
+
+<!-- # LR (likelihood ratio) test - compares nested restricted model -->
+<!-- # H0 – restricted (narrower) model is better -->
+<!-- # H1 – unrestricted (wider) model is better -->
+<!-- # df in chi2 is the number of restricted parameters -->
 ```{r message=FALSE, warning=FALSE}
 LR.sarlm(GNS_1, SDM_1)
 LR.sarlm(GNS_1, SDEM_1)
@@ -561,16 +588,9 @@ LR.sarlm(SDEM_1, SLX_1)
 
 ```
 
-### Direct and Indirect Impacts
 
 
-
-### Diagnostic Tests
-
-
-### Conclusion
-
-
+### 3. CONCLUSION
 
 
 
