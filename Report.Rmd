@@ -60,16 +60,6 @@ spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 
 ```
 
-
-### Requirements 
-
-- introduction to the subject, putting a research hypothesis --> DONE
-- description of the data - source, spatial diversity, or changes in time -->> DONE
-- specification of the problem / econometric model and expectations
-- model estimation and diagnostics / spatial quantitative analysis
-- interpretation of results and conclusions
-
-
 ## 1. INTRODUCTION
 
 ### 1.1. Aim of the Project
@@ -590,7 +580,7 @@ LR.sarlm(SDEM_1, SLX_1)
 
 
 
-### 3. CONCLUSION
+## 3. CONCLUSION
 
 
 
