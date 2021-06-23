@@ -347,16 +347,12 @@ plot(all.nb, crds, add=TRUE)
 
 <p style="text-align:justify;">The base model is constructed with variables that are thought to be important for alcohol sales. The model is provided below: </p>
 
-```{r}
-# significant denemeleri 
-ols <- lm(SALESPC ~ qtystores + COMM15OVP+ BKGRTOABC   + ENTRECP + UNEMPP + PCI +ADHERENTSP+LABFORCE, data = spadata)
-
-```
 
 
+GÜNNCEL MODEEEL!!! 
 ```{r}
 
-ols <- lm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata)
+ols <- lm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata)
 
 ```
 
