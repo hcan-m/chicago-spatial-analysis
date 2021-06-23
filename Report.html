@@ -3085,7 +3085,7 @@ From the summary of the data set, some variables like income and population are 
 <a class="sourceLine" id="cb3-11" title="11">spadata<span class="op">$</span>POP25OV &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">levels</span>(spadata<span class="op">$</span>POP25OV))[spadata<span class="op">$</span>POP25OV]</a>
 <a class="sourceLine" id="cb3-12" title="12">spadata<span class="op">$</span>POP16OV &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">levels</span>(spadata<span class="op">$</span>POP16OV))[spadata<span class="op">$</span>POP16OV]</a>
 <a class="sourceLine" id="cb3-13" title="13"></a>
-<a class="sourceLine" id="cb3-14" title="14"><span class="co"># </span></a>
+<a class="sourceLine" id="cb3-14" title="14"></a>
 <a class="sourceLine" id="cb3-15" title="15"><span class="co"># spadata$qtystores &lt;- as.numeric(spadata$qtystores)</span></a>
 <a class="sourceLine" id="cb3-16" title="16"><span class="co"># spadata$PCI &lt;- as.numeric(spadata$PCI)</span></a>
 <a class="sourceLine" id="cb3-17" title="17"><span class="co"># spadata$COUNTMXBV &lt;- as.numeric(spadata$COUNTMXBV)</span></a>
@@ -3223,8 +3223,7 @@ We can check whether the neighbourhood matrix is symmetric. The symmetry test sh
 <a class="sourceLine" id="cb6-3" title="3"><span class="co"># creating symettric knn neighbours matrix</span></a>
 <a class="sourceLine" id="cb6-4" title="4"></a>
 <a class="sourceLine" id="cb6-5" title="5">spa.sym.knn.nb&lt;-<span class="kw">make.sym.nb</span>(spa.knn.nb)</a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="kw">print</span>(<span class="kw">is.symmetric.nb</span>(spa.sym.knn.nb))</a></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co"># print(is.symmetric.nb(spa.sym.knn.nb))</span></a></code></pre></div>
 <p style="text-align:justify;">
 We can also save symmetric matrix as <strong>listw</strong> class. The results below shows that average number of links is nearly 3.6.
 </p>
@@ -3255,7 +3254,7 @@ First step is constructing a non-spatial model with OLS. After model constructio
 <p style="text-align:justify;">
 The base model is constructed with variables that are thought to be important for domestic violance. The model is provided below:
 </p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">ols &lt;-<span class="st"> </span><span class="kw">lm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">ols &lt;-<span class="st"> </span><span class="kw">lm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata)</a></code></pre></div>
 <p>The output of the model is provided below:</p>
 <pre><code>## 
 ## Call:
@@ -3295,9 +3294,9 @@ Now, we will test our model residuals’ autocorrelation with Moran’s I test. 
 <div id="moran-correlation-test" class="section level4">
 <h4>2.2.1. Moran Correlation Test</h4>
 <p>H0: No spatial correlation in the residuals</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># Moran&#39;s I test</span></a>
-<a class="sourceLine" id="cb11-2" title="2">ols_I &lt;-<span class="st"> </span><span class="kw">lm.morantest</span>(ols, cont.listw)</a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="kw">print</span>(ols_I)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co"># Moran&#39;s I test</span></a>
+<a class="sourceLine" id="cb10-2" title="2">ols_I &lt;-<span class="st"> </span><span class="kw">lm.morantest</span>(ols, cont.listw)</a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="kw">print</span>(ols_I)</a></code></pre></div>
 <pre><code>## 
 ##  Global Moran I for regression residuals
 ## 
@@ -3318,10 +3317,10 @@ Moran’s I statistic is significant (p &lt; 0.05) Moran’s Statistic is ~0.075
 </div>
 <div id="lagrange-multiplier-test" class="section level4">
 <h4>2.2.2. Lagrange Multiplier Test</h4>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="co">#Lagrange Multiplier Test</span></a>
-<a class="sourceLine" id="cb13-2" title="2"></a>
-<a class="sourceLine" id="cb13-3" title="3">ols_LM &lt;-<span class="st"> </span><span class="kw">lm.LMtests</span>(ols, cont.listw, <span class="dt">test =</span> <span class="st">&quot;all&quot;</span>)</a>
-<a class="sourceLine" id="cb13-4" title="4"><span class="kw">print</span>(ols_LM)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="co">#Lagrange Multiplier Test</span></a>
+<a class="sourceLine" id="cb12-2" title="2"></a>
+<a class="sourceLine" id="cb12-3" title="3">ols_LM &lt;-<span class="st"> </span><span class="kw">lm.LMtests</span>(ols, cont.listw, <span class="dt">test =</span> <span class="st">&quot;all&quot;</span>)</a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="kw">print</span>(ols_LM)</a></code></pre></div>
 <pre><code>## 
 ##  Lagrange multiplier diagnostics for spatial dependence
 ## 
@@ -3384,7 +3383,7 @@ The LM test results shows the significance of linear model and its lagged model,
 <h4>2.2.3. Other Diagnostic Tests for OLS</h4>
 <div id="breusch-pagan-test-for-heteroscedasticity" class="section level5">
 <h5>2.2.3.1. Breusch-Pagan Test for Heteroscedasticity</h5>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">bptest</span>(ols) <span class="co"># heteroscedasticity (H1) /homoscedastic (H0)</span></a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">bptest</span>(ols) <span class="co"># heteroscedasticity (H1) /homoscedastic (H0)</span></a></code></pre></div>
 <pre><code>## 
 ##  studentized Breusch-Pagan test
 ## 
@@ -3397,7 +3396,7 @@ The LM test results shows the significance of linear model and its lagged model,
 <div id="ramseys-test-for-functional-form" class="section level5">
 <h5>2.2.3.2. Ramsey’s Test for Functional Form</h5>
 <p>H1: when non-linear variables (like powers of the variables) should be included then model is mis-specified</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">resettest</span>(ols, <span class="dt">power=</span><span class="dv">2</span>, <span class="dt">type=</span><span class="st">&quot;regressor&quot;</span>)   </a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">resettest</span>(ols, <span class="dt">power=</span><span class="dv">2</span>, <span class="dt">type=</span><span class="st">&quot;regressor&quot;</span>)   </a></code></pre></div>
 <pre><code>## 
 ##  RESET test
 ## 
@@ -3506,9 +3505,9 @@ We can see from the results that both negative and positive residuals have posit
 ## Number of parameters estimated: 24 
 ## AIC: 1156.2, (AIC for lm: 1150.1)</code></pre>
 <p>DUI1802, ENTRECP significant while the rest are insignificant and if it comes to thetas all of them are insignificant. We can also see from the result that Rho and Lambda are insignificant as well and model’s AIC is 1156.2, which we are seeking for the smallest AIC for the best model.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="co"># SAC / SARAR model - includes spatial lag of Y, spatial error term</span></a>
-<a class="sourceLine" id="cb22-2" title="2">SAC_<span class="dv">1</span>&lt;-<span class="kw">sacsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw)</a>
-<a class="sourceLine" id="cb22-3" title="3"><span class="kw">summary</span>(SAC_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="co"># SAC / SARAR model - includes spatial lag of Y, spatial error term</span></a>
+<a class="sourceLine" id="cb21-2" title="2">SAC_<span class="dv">1</span>&lt;-<span class="kw">sacsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw)</a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="kw">summary</span>(SAC_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:sacsarlm(formula = FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + 
 ##     BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + 
@@ -3548,12 +3547,11 @@ We can see from the results that both negative and positive residuals have posit
 ## Number of parameters estimated: 14 
 ## AIC: 1144.8, (AIC for lm: 1150.1)</code></pre>
 <p>As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC’s of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well. We will continue to check the rest models to see if we can improve our results.</p>
-<!-- 2021-04-19 Class 08 - Practice of spatial dependency models  20:00 -->
 <!-- # SEM - spatial error model -->
 <!-- # typically includes spatial error term only (with lambda coefficient) -->
 <!-- # option etype="emixed" activates spatial lags of X (with theta coeff.) # what makes spatial Durbin error model -->
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">SDEM_<span class="dv">1</span>&lt;-<span class="kw">errorsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw, <span class="dt">etype=</span><span class="st">&quot;emixed&quot;</span>) <span class="co"># with spatial lags of X</span></a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="kw">summary</span>(SDEM_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">SDEM_<span class="dv">1</span>&lt;-<span class="kw">errorsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw, <span class="dt">etype=</span><span class="st">&quot;emixed&quot;</span>) <span class="co"># with spatial lags of X</span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="kw">summary</span>(SDEM_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:errorsarlm(formula = FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + 
 ##     BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + 
@@ -3599,8 +3597,8 @@ We can see from the results that both negative and positive residuals have posit
 ## Number of parameters estimated: 23 
 ## AIC: 1154.8, (AIC for lm: 1154.8)</code></pre>
 <p>In this thetas came back and we omit rho this time. This model has AIC: 1154.8 which is bigger than SAC / SARAR Model which means it is worst than previous model. So we decided to move forward.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1">SEM_<span class="dv">1</span>&lt;-<span class="kw">errorsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw) <span class="co"># no spat-lags of X</span></a>
-<a class="sourceLine" id="cb26-2" title="2"><span class="kw">summary</span>(SEM_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">SEM_<span class="dv">1</span>&lt;-<span class="kw">errorsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw) <span class="co"># no spat-lags of X</span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="kw">summary</span>(SEM_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:errorsarlm(formula = FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + 
 ##     BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + 
@@ -3637,10 +3635,8 @@ We can see from the results that both negative and positive residuals have posit
 ## AIC: 1149, (AIC for lm: 1150.1)</code></pre>
 <p>In SEM - spatial error model we eliminate both rho and theta and lambda is significant. And from results we can see that this model has AIC: 1149 which is bigger that SAC / SARAR Model’s AIC.</p>
 <!-- # SAR - spatial lag model -->
-<!-- # normally includes spatial lag of Y only (with rho coefficient) -->
-<!-- # option type="mixed" activates spatial lags of X (with theta coeff.) -->
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">SDM_<span class="dv">1</span>&lt;-<span class="kw">lagsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw, <span class="dt">type=</span><span class="st">&quot;mixed&quot;</span>) <span class="co"># with spatial lags of X</span></a>
-<a class="sourceLine" id="cb28-2" title="2"><span class="kw">summary</span>(SDM_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">SDM_<span class="dv">1</span>&lt;-<span class="kw">lagsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw, <span class="dt">type=</span><span class="st">&quot;mixed&quot;</span>) <span class="co"># with spatial lags of X</span></a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="kw">summary</span>(SDM_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:lagsarlm(formula = FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + 
 ##     BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + 
@@ -3686,8 +3682,8 @@ We can see from the results that both negative and positive residuals have posit
 ## Number of parameters estimated: 23 
 ## AIC: 1154.4, (AIC for lm: 1154.8)</code></pre>
 <p>SAR - spatial lag model normally includes spatial lag of Y only (with rho coefficient) but with option type=“mixed” we activated spatial lags of X (with theta coeff.) And AIC is 1154.4 which is bigger than SAC / SARAR Model.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1">SAR_<span class="dv">1</span>&lt;-<span class="kw">lagsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw) <span class="co"># no spatial lags of X</span></a>
-<a class="sourceLine" id="cb30-2" title="2"><span class="kw">summary</span>(SAR_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1">SAR_<span class="dv">1</span>&lt;-<span class="kw">lagsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw) <span class="co"># no spatial lags of X</span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="kw">summary</span>(SAR_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:lagsarlm(formula = FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + 
 ##     BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + 
@@ -3726,9 +3722,9 @@ We can see from the results that both negative and positive residuals have posit
 <!-- # from errorsarlm() library -->
 <!-- # an ‘lm’ model augmented with the spatially lagged RHS variables -->
 <!-- # RHS variables – right-hand side variables -->
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">SLX_<span class="dv">1</span>&lt;-<span class="kw">lmSLX</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata,</a>
-<a class="sourceLine" id="cb32-2" title="2">             <span class="dt">listw=</span>cont.listw)</a>
-<a class="sourceLine" id="cb32-3" title="3"><span class="kw">summary</span>(SLX_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1">SLX_<span class="dv">1</span>&lt;-<span class="kw">lmSLX</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata,</a>
+<a class="sourceLine" id="cb31-2" title="2">             <span class="dt">listw=</span>cont.listw)</a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="kw">summary</span>(SLX_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = formula(paste(&quot;y ~ &quot;, paste(colnames(x)[-1], collapse = &quot;+&quot;))), 
@@ -3777,7 +3773,7 @@ We can see from the results that both negative and positive residuals have posit
 <!-- # H0 – restricted (narrower) model is better -->
 <!-- # H1 – unrestricted (wider) model is better -->
 <!-- # df in chi2 is the number of restricted parameters -->
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">LR.sarlm</span>(GNS_<span class="dv">1</span>, SAC_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">LR.sarlm</span>(GNS_<span class="dv">1</span>, SAC_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ##  Likelihood ratio for spatial linear models
 ## 
@@ -3786,7 +3782,7 @@ We can see from the results that both negative and positive residuals have posit
 ## sample estimates:
 ## Log likelihood of GNS_1 Log likelihood of SAC_1 
 ##               -554.0976               -558.4201</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">LR.sarlm</span>(SAC_<span class="dv">1</span>, SAR_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">LR.sarlm</span>(SAC_<span class="dv">1</span>, SAR_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ##  Likelihood ratio for spatial linear models
 ## 
@@ -3795,7 +3791,7 @@ We can see from the results that both negative and positive residuals have posit
 ## sample estimates:
 ## Log likelihood of SAC_1 Log likelihood of SAR_1 
 ##               -558.4201               -559.9545</code></pre>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="kw">LR.sarlm</span>(SAC_<span class="dv">1</span>, SEM_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">LR.sarlm</span>(SAC_<span class="dv">1</span>, SEM_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ##  Likelihood ratio for spatial linear models
 ## 
@@ -3808,13 +3804,12 @@ We can see from the results that both negative and positive residuals have posit
 <p>In the second test we compare SAC / SAR model with SARAR (Spatial Lag Model) and our p-value is 0.07981 and we think that we can reject H0 since it is below 0.1 significant level which means wider model is better and in this case SAC / SAR model is wider.</p>
 <p>In the last test we compare SAC / SARAR model with SEM (Spatial Error Model) and we reject H0 with p-value 0.01292 which means wider model is better and in this case SAC / SAR model is wider.</p>
 </div>
-</div>
-<div id="final-model" class="section level2">
-<h2>2.6 Final Model</h2>
+<div id="final-model" class="section level3">
+<h3>2.6 Final Model</h3>
 <p>SAC / SARAR model - includes spatial lag of Y, spatial error term</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="co"># SAC / SARAR model - includes spatial lag of Y, spatial error term</span></a>
-<a class="sourceLine" id="cb40-2" title="2">SAC_<span class="dv">1</span>&lt;-<span class="kw">sacsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw)</a>
-<a class="sourceLine" id="cb40-3" title="3"><span class="kw">summary</span>(SAC_<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co"># SAC / SARAR model - includes spatial lag of Y, spatial error term</span></a>
+<a class="sourceLine" id="cb39-2" title="2">SAC_<span class="dv">1</span>&lt;-<span class="kw">sacsarlm</span>(FVPTHH02 <span class="op">~</span><span class="st"> </span>SALESPC <span class="op">+</span><span class="st"> </span>DUI1802 <span class="op">+</span><span class="st"> </span>SOMECOLLP <span class="op">+</span><span class="st"> </span>BKGRTOABC <span class="op">+</span><span class="st"> </span>BAPTISTSP <span class="op">+</span><span class="st"> </span>BKGRTOMIX <span class="op">+</span><span class="st"> </span>ENTRECP <span class="op">+</span><span class="st"> </span>UNEMPP <span class="op">+</span><span class="st"> </span>PCI <span class="op">+</span><span class="st"> </span>URBANP, <span class="dt">data =</span> spadata, <span class="dt">listw=</span>cont.listw)</a>
+<a class="sourceLine" id="cb39-3" title="3"><span class="kw">summary</span>(SAC_<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## 
 ## Call:sacsarlm(formula = FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + 
 ##     BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + 
@@ -3854,6 +3849,7 @@ We can see from the results that both negative and positive residuals have posit
 ## Number of parameters estimated: 14 
 ## AIC: 1144.8, (AIC for lm: 1150.1)</code></pre>
 <p>As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP and ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC’s of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well.</p>
+</div>
 </div>
 <div id="conclusion" class="section level2">
 <h2>3. CONCLUSION</h2>

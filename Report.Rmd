@@ -588,7 +588,7 @@ In the second test we compare SAC / SAR model with SARAR (Spatial Lag Model) and
 In the last test we compare SAC / SARAR model with SEM (Spatial Error Model) and we reject H0 with p-value 0.01292 which means wider model is better and in this case SAC / SAR model is wider.
 
 
-## 2.6 Final Model
+### 2.6 Final Model
 
 SAC / SARAR model - includes spatial lag of Y, spatial error term
 
