@@ -410,7 +410,7 @@ moran.plot(zx$V1, cont.listw, pch=19, labels=as.character(spadata$NAME))
 
 ```{r eval=FALSE, include=FALSE}
 # test join.count for residuals (positive vs. negative)
-resid<-factor(cut(res, breaks=c(-100, 0, 100), labels=c("negative","positive")))
+resid<-factor(cut(res, breaks=c(-200, 0, 200), labels=c("negative","positive")))
 joincount.test(resid, cont.listw)
 ```
 
