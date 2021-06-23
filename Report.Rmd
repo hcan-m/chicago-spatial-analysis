@@ -359,6 +359,7 @@ moranTest
 ols <- lm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata)
 summary(ols)
 ```
+<<<<<<< HEAD
 
 ```{r}
 ols_I <- lm.morantest(ols, cont.listw)
@@ -366,6 +367,10 @@ ols_LM <- lm.LMtests(ols, cont.listw, test = "all")
 print(ols_LM)
 ```
 
+=======
+We can see from our model BKGRTOABC   ENTRECP      UNEMPP       significant and DUI1802 could be in 0.1 interval
+ R-squared:  0.4572 which is quite okay.
+>>>>>>> d0f58b8d0c8ad4fd87d5fe1019f55bb9edd8f0e5
 
 ```{r}
 
@@ -399,12 +404,12 @@ lmMoranTest
 
 ```
 
-p-value is very small so we have to reject null hypothesis and Moran's Statistic is 0.19 which means that there is a significant evidence that positive spatial correlation exists between the residuals and we should use a spatial model.
+p-value is very small so we have to reject null hypothesis and Moran's Statistic is  -0.005 which means that there is a significant evidence that negative spatial correlation exists between the residuals and we should use a spatial model.
 
 # Moran scatterplot
 ```{r}
 # preparing the data
-x<-spadata$DUI1802 # variable selection
+x<-spadata$SALESPC # variable selection
 zx<-as.data.frame(scale(x))  #standardization of variable
 
 # Moran scatterplot – automatic version
@@ -412,7 +417,9 @@ moran.plot(zx$V1, cont.listw, pch=19, labels=as.character(spadata$NAME))
 
 ```
 
+We can see on the Moran scatterplot how our dependent variable's spatial correlation  
 
+We can also cluster negatives and positives next to each other and check how they correlate. In order to do that we took the residuals and cluster them and after that we used join count test.
 
 ```{r eval=FALSE, include=FALSE}
 # test join.count for residuals (positive vs. negative)
@@ -420,6 +427,7 @@ resid<-factor(cut(res, breaks=c(-200, 0, 200), labels=c("negative","positive")))
 joincount.test(resid, cont.listw)
 ```
 
+We can see from the results that negative residuals has spatial correlation from other hand we don't have the statistically proof to say the same thing for the positive values. And we decided to use spatial models because according to Moran test there is a spatial correlation between residuals and there is spatial correlation between negative ones as well.
 
 ```{r eval=FALSE, include=FALSE}
 
@@ -465,7 +473,23 @@ what next...
 
 
 ### SAR /SEM 
+<<<<<<< HEAD
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+=======
+
+GNS: Y= \rho WY+Xβ+WX\theta+u and u= \lambda Wu+e
+
+rho spatial lag of dependent variable (impacts)
+beta 
+theta spatial lag of explanotary variable
+lambda spatial lag of error term (in order to get random term which is epsilon)
+
+We wanted to start with Monski model to see what we should expect from our model.
+
+### Monski Model
+
+```{r}
+>>>>>>> d0f58b8d0c8ad4fd87d5fe1019f55bb9edd8f0e5
 # Estimation of spatial models with 3,2, or 1 spatial components
 
 # Manski model (full specification) - includes spatial lag of Y (rho), 
@@ -474,12 +498,27 @@ what next...
 GNS_1<-sacsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, type="sacmixed", method="LU")  # method="LU" speeds up computations
 summary(GNS_1)
 ```
+<<<<<<< HEAD
 
 ```{r message=FALSE, warning=FALSE}
+=======
+SOMECOLLP, BKGRTOABC, BAPTISTSP, BKGRTOMIX, ENTRECP, UNEMPP significant and if it comes to thetas just thetas of BAPTISTSP significant while the rest is insignificant. We can also see from the result that Rho and Lambda are insignificant as well and model's AIC is 2377.8, which we are seeking for the smallest AIC for the best model. Since AIC for lm is bigger than AIC we should continue to search for spatial model.
+
+
+```{r}
+>>>>>>> d0f58b8d0c8ad4fd87d5fe1019f55bb9edd8f0e5
 # SAC / SARAR model - includes spatial lag of Y, spatial error term
 SAC_1<-sacsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw)
 summary(SAC_1)
 ```
+
+As we can see in this model thetas disappeared from result as planned. DUI1802 BKGRTOABC BAPTISTSP BKGRTOMIX ENTRECP UNEMPP significant. And we can see this time rho and lambda are significant as well. AIC: 2375.2 which is smaller than AIC for LM still.
+
+
+## TO-DO: add what to do when rho and lambda significant.
+2021-04-19 Class 08 - Practice of spatial dependency models  20:00
+
+
 # SEM - spatial error model
 # typically includes spatial error term only (with lambda coefficient)
 # option etype="emixed" activates spatial lags of X (with theta coeff.) # what makes spatial Durbin error model
