@@ -43,8 +43,8 @@ library(rgdal)
 library(shape)
 library(RColorBrewer)
 library(lmtest)
-library(spatialreg)
-library(textreg)
+#library(spatialreg)
+
 ```
 
 ```{r setup, include=FALSE}
@@ -520,9 +520,6 @@ summary(SAC_1)
 As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC's of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well. We will continue to check the rest models to see if we can improve our results.
 
 
-<!-- 2021-04-19 Class 08 - Practice of spatial dependency models  20:00 -->
-
-
 <!-- # SEM - spatial error model -->
 <!-- # typically includes spatial error term only (with lambda coefficient) -->
 <!-- # option etype="emixed" activates spatial lags of X (with theta coeff.) # what makes spatial Durbin error model -->
@@ -542,8 +539,7 @@ summary(SEM_1)
 In SEM - spatial error model we eliminate both rho and theta and lambda is significant. And from results we can see that this model has AIC: 1149 which is bigger that SAC / SARAR Model's AIC.
 
 <!-- # SAR - spatial lag model -->
-<!-- # normally includes spatial lag of Y only (with rho coefficient) -->
-<!-- # option type="mixed" activates spatial lags of X (with theta coeff.) -->
+
 ```{r message=FALSE, warning=FALSE}
 SDM_1<-lagsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata, listw=cont.listw, type="mixed") # with spatial lags of X
 summary(SDM_1)
@@ -568,6 +564,8 @@ summary(SLX_1)
 In here we checked an ‘lm’ model augmented with the spatially lagged RHS variables which didn't perform well.
 
 
+***
+
 After seeing all model results we would like to choose our final model as SAC / SARAR model but in order to do so we need to do proper Likelihood ratio test first to see if it is indeed would be a good choice.
 
 
@@ -582,7 +580,6 @@ LR.sarlm(GNS_1, SAC_1)
 LR.sarlm(SAC_1, SAR_1)
 LR.sarlm(SAC_1, SEM_1)
 
-??LR.sarlm
 ```
 
 In the first test we compare Manski model with SAC / SARAR model and we cannot reject H0 with p-value 0.5661 which means narrower model is better and in this case SAC / SAR model is narrower.  
@@ -604,11 +601,10 @@ SAC_1<-sacsarlm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP
 summary(SAC_1)
 ```
 
-## TO-DO: re-write the final model explanation
-As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC's of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well. We will continue to check the rest models to see if we can improve our results.
+As we can see in SAC / SARAR model model thetas disappeared from result as planned. DUI1802, BKGRTOABC, BAPTISTSP and ENTRECP are significant. And we can see this time that both rho and lambda are significant. Rho: 0.45565 Lambda: -0.37713 And AIC: 1144.8 which is smaller than AIC's of Monski model and also smaller than AIC for lm. It means our model is getting better and for our dataset this model perform very well. 
 
 ## 3. CONCLUSION
 
-<p style="text-align:justify;">In this project, we tried to find the model to answer our research question that is how alcohol restrictions affect the offense related problems. First, we investigated the data set visually. After that, we started to build model model with a non-spatial one. First model was OLS. Moran's test for the OLS model showed that there is spatial effects of the residuals and spatial models should be developed. After that, we started to build different spatial models. We built SAR,XX,XX,XX models and tried to reach best model with highest significant variables and lowest AIC values. In the final stage, the best model is obtained with XXX model. The main intepratation from this model output is that, domestic violance is not affected by alcohol consumption or alcohol sales and sales points. Therefore, we verified the previous study.</p>
+<p style="text-align:justify;">In this project, we tried to find the model to answer our research question that is how alcohol restrictions affect the offense related problems. First, we investigated the data set visually. After that, we started to build model model with a non-spatial one. First model was OLS. Moran's test for the OLS model showed that there is spatial effects of the residuals and spatial models should be developed. After that, we started to build different spatial models. We built Monski Model in the beginning and then SEM,SAR,SAC,SAR,SARAR models and tried to reach best model with highest significant variables and lowest AIC values. In the final stage, the best model is obtained with SAC / SARAR including spatial lag of Y, spatial error term. The main intepratation from this model output is that, domestic violance is not affected by alcohol consumption or alcohol sales. Therefore, we verified the previous study.</p>
 
 
