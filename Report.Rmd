@@ -199,9 +199,9 @@ title(main="Liqour Sales Per Capita Per Year ($)\n in Virginia and North Carolin
 
 ***
 
-Second insight 
+<p style="text-align:justify;">Second analysis is about demographic structure of the states. Urban population is a good indicator to give an idea about consumer densities. Since urban areas has more people living in it, sales are directly affected from it. Therefore, next graph shows the density of urban population in both states.</p>
 
-```{r}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 library(sf)
 spadata.sf <- st_read("NCVACO Variables.shp")
 spadata.sf<- st_transform(spadata.sf, CRS("+proj=longlat +datum=NAD83")) 
@@ -211,7 +211,7 @@ spadata.sf<- st_transform(spadata.sf, CRS("+proj=longlat +datum=NAD83"))
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot() +
-  geom_sf(spadata.sf, mapping = aes(geometry=geometry, fill = TOTALPOP)) +
+  geom_sf(spadata.sf, mapping = aes(geometry=geometry, fill = URBANP)) +
   labs(title = "Population Density in Virginia and North Carolina",
        fill = "Total Population") +
   annotate("text", x = -83, y = 39, size = 5, 
@@ -222,8 +222,28 @@ ggplot() +
 
 ```
 
+<p style="text-align:justify;">It is shown in the map that the urbanisation rate of the Virginia is less than North Carolina. Since urban population is more in North Carolina, the alcohol sales can be affected from this, but we will see the situation in our analysis.</p>
 
-### Clustering
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+variable<-spadata$DUI1802
+maxy<-35
+breaks<-c(0, 5, 10, 15, 20, 25, 30,35) # used in the legend 
+nclr<-8
+plotclr<-brewer.pal(nclr, "Purples") # from the RColorBrewer package 
+fillRed<-colorRampPalette(plotclr) # from the grDevices package 
+colcode<-fillRed(maxy)[round(variable) + 1] # fillRed is a function 
+plot(spadata, col=colcode , lwd=1,border="gray70") 
+
+colorlegend(posy=c(0.05,0.95), posx=c(0.9,0.92), col=fillRed(maxy), zlim=c(0, maxy), zval=breaks, main.cex=0.9) # from the shape:: package
+
+title(main="Arrastment Density from DUI in\n Virginia and North Carolina")
+
+```
+
+
+
+### Clustering (SONA BIRAKTIK)
 ### OLS (Benchmark model)
 ### SAR / SEM 
 ### Diagnostic Tests
@@ -300,14 +320,14 @@ moran.plot(zx$V1, nb2listw(nbrqueen), pch=19, labels=as.character(spadata$NAME))
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 # test join.count for residuals (positive vs. negative)
 resid<-factor(cut(res, breaks=c(-100, 0, 100), labels=c("negative","positive")))
 joincount.test(resid, nb2listw(nbrqueen))
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 # spatial distribution of OLS residuals
 summary(ols$residuals)
