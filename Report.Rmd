@@ -567,10 +567,6 @@ summary(SLX_1)
 ```
 In here we checked an ‘lm’ model augmented with the spatially lagged RHS variables which didn't perform well.
 
-```{r}
-screenreg(list(GNS_1,SAC_1,SDM_1,SAR_1,SEM_1,SLX_1))
-```
-
 
 After seeing all model results we would like to choose our final model as SAC / SARAR model but in order to do so we need to do proper Likelihood ratio test first to see if it is indeed would be a good choice.
 
