@@ -42,6 +42,7 @@ library(maptools)
 library(rgdal)
 library(shape)
 library(RColorBrewer)
+library(lmtest)
 
 ```
 
@@ -202,7 +203,8 @@ title(main="Liqour Sales Per Capita Per Year ($)\n in Virginia and North Carolin
 <p style="text-align:justify;">Second analysis is about demographic structure of the states. Urban population is a good indicator to give an idea about consumer densities. Since urban areas has more people living in it, sales are directly affected from it. Therefore, next graph shows the density of urban population in both states.</p>
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
-library(sf)
+# to use ggplot() we need to convert polygon data to sf 
+
 spadata.sf <- st_read("NCVACO Variables.shp")
 spadata.sf<- st_transform(spadata.sf, CRS("+proj=longlat +datum=NAD83")) 
 
@@ -212,8 +214,8 @@ spadata.sf<- st_transform(spadata.sf, CRS("+proj=longlat +datum=NAD83"))
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot() +
   geom_sf(spadata.sf, mapping = aes(geometry=geometry, fill = URBANP)) +
-  labs(title = "Population Density in Virginia and North Carolina",
-       fill = "Total Population") +
+  labs(title = "Urban Population Density in Virginia and North Carolina",
+       fill = "Urban Population") +
   annotate("text", x = -83, y = 39, size = 5, 
            color = "red", alpha = 0.4, label = "Virginia") +
   annotate("text", x = -82, y = 34, size = 5, 
@@ -224,6 +226,9 @@ ggplot() +
 
 <p style="text-align:justify;">It is shown in the map that the urbanisation rate of the Virginia is less than North Carolina. Since urban population is more in North Carolina, the alcohol sales can be affected from this, but we will see the situation in our analysis.</p>
 
+***
+
+<p style="text-align:justify;">Another useful insight about the data set, mapping the offense related indicators. In below map, we visualized DUI arrests per 1,000 people who are older than 18. Driving under the influence (DUI) is the offense of driving, operating, or being in control of a vehicle while impaired by alcohol or other drugs (including recreational drugs and those prescribed by physicians), to a level that renders the driver incapable of operating a motor vehicle safely (Source:Wikipedia). It is useful to see DUI arrests in order to interpret the alcohol sales.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 variable<-spadata$DUI1802
@@ -241,28 +246,97 @@ title(main="Arrastment Density from DUI in\n Virginia and North Carolina")
 
 ```
 
+<p style="text-align:justify;">From the map, it is seen that the DUI arrests are higher in North Carolina. It could said that alcohol sales may be higher in North Carolina and we will also see the significance of DUI arrasments for alcohol sales.</p> 
+
+*** 
+
+<p style="text-align:justify;">After getting main insight about important indicators, the next section introduce modelling of the data set. We will first construct a traditonal OLS model as benchmark. After OLS, acording to diagnostic test results, we will construct spatial models. </p>
 
 
-### Clustering (SONA BIRAKTIK)
-### OLS (Benchmark model)
-### SAR / SEM 
-### Diagnostic Tests
-### Conclusion
+## MODELING
 
-<!-- CAN'S PART -->
+Before jumping construction of models, first we need a spatial weight matrix for spatial models in the following part of the model. 
 
-### preparing spatial weights matrix
-Queen criterion: two units are close if they share a side or an edge.
-Rook criterion: two units are close to one another if they share a side
+### Preparing Spatial Weights Matrix
 
+Structure of the neighborhood is key factor while constructing a spatial model. In our analysis, we tried to create few neighborhood matrix which are contiguity matrix and k nearest neighbors (knn) matrix. We also checked neighbours for symmetry. 
 
-```{r}
-nbrqueen <- poly2nb(spadata, row.names = spadata$FIPS)
-nbrrook  <- poly2nb(spadata, queen=FALSE) 
+The result of the contiguity matrix is provided below: 
+
+```{r include=FALSE}
+cont.nb<-poly2nb(as(spadata, "SpatialPolygons"))
+cont.listw<-nb2listw(cont.nb, style="W")
+
+# coordinates of units 
+#(geometric center of gravity)
+crds<-coordinates(spadata)
+colnames(crds)<-c("cx", "cy")
+
 ```
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+cont.listw # summary of matrix
+
+```
+
+The plot of neighbours is provided below: 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# plot of neighbourhood
+plot(spadata) # contour map
+plot(cont.nb, crds, add=TRUE)
+```
+
+Secondly, we created spatial weights matrix with k nearest neighbours. The number of closest neighbours is selected 3. The result map is provided below:
+
+```{r echo=FALSE}
+spa.knn<-knearneigh(crds, k=3) # knn class (k=3)
+spa.knn.nb<-knn2nb(spa.knn)
+plot(spadata)
+plot(spa.knn.nb, crds, add=TRUE)
+
+```
+
+We can check whether the negihbourhood matrix is symmetric. The symmetry test shows that, the matrix is not symmetric since the test result gives `r print(is.symmetric.nb(spa.knn.nb))`. We can turn it to syymetric matrix as below:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# creating symettric knn neighbours matrix
+
+spa.sym.knn.nb<-make.sym.nb(spa.knn.nb)
+print(is.symmetric.nb(spa.sym.knn.nb))
+
+```
+
+We can also save symmetric matrix as listw class. The results below shows that average number of links is nearly 3.6.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# knn as listw class
+spa.sym.knn.listw<-nb2listw(spa.sym.knn.nb)
+spa.sym.knn.listw
+
+```
+
+Lastly, we can calculate at what distance all units have at least one neighbour. At 0.7975231 km, all units have at least one neighbour. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# implicitly k=3, list of closests neighbours
+kkk<-knn2nb(knearneigh(crds, k=3)) 
+
+# max of distances between clostests neighbours (0.7975231)
+all<-max(unlist(nbdists(kkk, crds))) 
+
+# neighbours in radius of 0.7975231 km 
+
+all.nb<-dnearneigh(crds, 0, all) 
+
+plot(spadata, border="grey") 
+plot(all.nb, crds, add=TRUE)
+```
+
+A measure of global spatial autocorrelation: Moran's I 
+
 ```{r}
-moranTest <- moran.test(spadata$SALESPC, nb2listw(nbrqueen))
+moranTest <- moran.test(spadata$SALESPC, cont.listw)
 moranTest
 ```
 
@@ -277,7 +351,7 @@ summary(ols)
 ```{r}
 
 # diagnostics of linear model
-library(lmtest)
+
 bptest(ols) # heteroscedasticity test (H1) /homoscedast…(H0)
 
 ```
