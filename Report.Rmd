@@ -64,7 +64,7 @@ spadata <- readOGR(dsn = ".", layer = "NCVACO Variables")
 
 ### 1.1. Aim of the Project
 
-<p style="text-align:justify;">In this project, it is aimed to model liquor demand in Virginia and North Carolina. The original study has been conducted by Mark L. Burkey. With his research, it was aimed to find answer whether the geographical restrictions on the alcohol make any effect on the alcohol-related problems. The results have shown that alcohol restrictions did not make any effect on alcohol-related problems. In our project, we tried to find the answer to our research question: Which factors affect the alcohol demand and how geographical alcohol restrictions changes consumer behaviours. We constructed both traditional regression model with OLS (benchmark model) and also spatial models with SAR & SEM. </p> 
+<p style="text-align:justify;">In this project, it is aimed to model liquor demand in Virginia and North Carolina. The original study has been conducted by Mark L. Burkey. With his research, it was aimed to find answer whether the geographical restrictions on the alcohol make any effect on the alcohol-related problems. He focused arrastments because of driving under the influence of alcohol (other drugs) and tried to explain how alcohol restriction affect the DUI arrastments. The results have shown that alcohol restrictions did not make any effect on arrastments. In our project, we tried to find the answer to a different problem which is domestic violence in households. Our research question is how geographical alcohol restrictions affect the domestic violance. We constructed both traditional regression model with OLS (benchmark model) and also spatial models. </p> 
 
 
 ### 1.2. Information About Data Set
@@ -179,7 +179,29 @@ str(slot(spadata,"data"))
 
 ### 1.3. Explonatory Data Analysis (EDA)
 
-<p style="text-align:justify;">EDA is important tool to see the general picture of the data set. In this section, EDA has been applied as preliminary analysis. First analysis, obviously, to look at the dependent vairable in the model. Liqour sales (SALESPC) is the dependent variable in the data set. The visualization of the liqour sales density in geographic map as below:</p>
+<p style="text-align:justify;">EDA is important tool to see the general picture of the data set. In this section, EDA has been applied as preliminary analysis. First analysis, obviously, to look at the dependent vairable in the model. Offences against families and children (domestic violence) per 1,000 households (FVPTHH02) is the dependent variable in the models for the following sections. The visualization of the domestic sales density in geographic map as below:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+variable<-spadata$FVPTHH02
+maxy<-25
+breaks<-c(0, 5, 10, 15, 20, 25) # used in the legend 
+nclr<-6
+plotclr<-brewer.pal(nclr, "Reds") # from the RColorBrewer package 
+fillRed<-colorRampPalette(plotclr) # from the grDevices package 
+colcode<-fillRed(maxy)[round(variable) + 1] # fillRed is a function 
+plot(spadata, col=colcode , lwd=1,border="gray70") 
+
+colorlegend(posy=c(0.05,0.9), posx=c(0.9,0.92), col=fillRed(maxy), zlim=c(0, maxy), zval=breaks, main.cex=0.9) # from the shape:: package
+
+title(main="Violence Per 1,000 Households in Virginia and North Carolina")
+```
+
+<p style="text-align:justify;">In the above figure, the top map represents Virginia and bottom map represents North Carolina. When we look at the domestic violance in the counties, it is seen that the violance rates are higher in some regions in North Carolina. In general, the domestic violance is low among both counties.</p>
+
+***
+
+Another useful insight could be liquor sales in both county. It is one of the most important variables since it is directly reflection of the alcohol consumption. The visualision of map for two counties is below: 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -197,9 +219,8 @@ colorlegend(posy=c(0.05,0.9), posx=c(0.9,0.92), col=fillRed(maxy), zlim=c(0, max
 title(main="Liqour Sales Per Capita Per Year ($)\n in Virginia and North Carolina")
 ```
 
-<br> 
 
-<p style="text-align:justify;">From the figure, the top map represents Virginia and bottom map represents North Carolina. We can see that highest sales have occured in East North Carolina. Moreover, for both states the liqour sales are generally low (mostly between 0-150$).</p>
+<p style="text-align:justify;"> We can see that highest sales have occured in East North Carolina. Moreover, for both states the liqour sales are generally low (mostly between 0-150$).</p>
 
 ***
 
@@ -231,7 +252,7 @@ ggplot() +
 
 ***
 
-<p style="text-align:justify;">Another useful insight about the data set, mapping the offense related indicators. In below map, we visualized DUI arrests per 1,000 people who are older than 18. Driving under the influence (DUI) is the offense of driving, operating, or being in control of a vehicle while impaired by alcohol or other drugs (including recreational drugs and those prescribed by physicians), to a level that renders the driver incapable of operating a motor vehicle safely (Source:Wikipedia). It is useful to see DUI arrests in order to interpret the alcohol sales.</p>
+<p style="text-align:justify;">Another useful insight about the data set, mapping the another crime related indicator in the data set. In below map, we visualized DUI arrests per 1,000 people who are older than 18. Driving under the influence (DUI) is the offense of driving, operating, or being in control of a vehicle while impaired by alcohol or other drugs (including recreational drugs and those prescribed by physicians), to a level that renders the driver incapable of operating a motor vehicle safely (Source:Wikipedia). It is useful to see DUI arrests in order to have an idea about domestic violance.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 variable<-spadata$DUI1802
@@ -249,7 +270,7 @@ title(main="Arrastment Density from DUI in\n Virginia and North Carolina")
 
 ```
 
-<p style="text-align:justify;">From the map, it is seen that the DUI arrests are higher in North Carolina. It could said that alcohol sales may be higher in North Carolina and we will also see the significance of DUI arrasments for alcohol sales.</p> 
+<p style="text-align:justify;">From the map, it is seen that the DUI arrests are higher in North Carolina.</p> 
 
 *** 
 
@@ -300,7 +321,7 @@ plot(spa.knn.nb, crds, add=TRUE)
 
 ```
 
-<p style="text-align:justify;">We can check whether the negihbourhood matrix is symmetric. The symmetry test shows that, the matrix is not symmetric since the test result gives FALSE. We can turn it to syymetric matrix as below:</p>
+<p style="text-align:justify;">We can check whether the neighbourhood matrix is symmetric. The symmetry test shows that, the matrix is not symmetric since the test result gives FALSE. We can turn it to syymetric matrix as below:</p>
 
 ```{r message=FALSE, warning=FALSE}
 
@@ -345,11 +366,8 @@ plot(all.nb, crds, add=TRUE)
 
 <p style="text-align:justify;">First step is constructing a non-spatial model with OLS. After model construction,we will test its residuals against spatial autocorrelation by Moran's I test. Moran's I is a measure of spatial autocorrelation–how related the values of a variable are based on the locations where they were measured. </p>
 
-<p style="text-align:justify;">The base model is constructed with variables that are thought to be important for alcohol sales. The model is provided below: </p>
+<p style="text-align:justify;">The base model is constructed with variables that are thought to be important for domestic violance. The model is provided below: </p>
 
-
-
-GÜNNCEL MODEEEL!!! 
 ```{r}
 
 ols <- lm(FVPTHH02 ~ SALESPC + DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP, data = spadata)
@@ -362,7 +380,7 @@ The output of the model is provided below:
 summary(ols)
 ```
 
-<p style="text-align:justify;">From the result of the model, DUI1802 (significant for significance level 0.1), BKGRTOABC, ENTRECP, UNEMPP variables are seen as significant variables. This shows that urban population has no effect on the alcohol sales. Moreover, The higher education, number of southern baptists, weighted average distance to nearest bar selling liquor, income per capita, and offense against families and children do not have a significant effect on liquor sales. R-squared is 0.4572, which is quite okay.</p>
+<p style="text-align:justify;">From the result of the model, DUI1802, BKGRTOABC, BAPTISTSP, ENTRECP and URBANP (significant in 0.1 significance level) variables are seen as significant variables. This shows that educaiton, income and employement related indicators has no effect on the domestic violance. Moreover, liquor sales is insignificant in the model. It implies that alcohol consumption does not have an effect on violance.</p>
 
 
 <p style="text-align:justify;">Now, we will test our model residuals' autocorrelation with Moran's I test. In addition to Moran's tests, Lagrange Multiplier test is also provided below. It is important to see the significance or misspecification of the constructed models. </p>
@@ -378,7 +396,7 @@ ols_I <- lm.morantest(ols, cont.listw)
 print(ols_I)
 ```
 
-Moran’s I statistic is not significant (p >0.05) Moran's Statistic is ~0.033 which means that there is a insignificant evidence that positive spatial correlation exists between the residuals and we should use a spatial model(!!!!). So, it means that spatial autocorrelation does not exist. We can keep OLS.(!!!) 
+<p style="text-align:justify;">Moran’s I statistic is significant (p < 0.05) Moran's Statistic is ~0.75 which means that there is a significant evidence that positive spatial correlation exists between the residuals. So, we should use a spatial model.</p>
 
 #### 2.2.2. Lagrange Multiplier Test
 
@@ -390,7 +408,8 @@ ols_LM <- lm.LMtests(ols, cont.listw, test = "all")
 print(ols_LM)
 ```
 
-The LM test results shows the significance of linear model and its lagged model, their robust version and SARMA model. When we look at the linear model significance, the robust linear model with lag is better than classic linear model (and with lag). Also, SARMA model is significant according to test result. 
+<p style="text-align:justify;">The LM test results shows the significance of linear model and its lagged model, their robust version and SARMA model. When we look at the linear model significance, since LMerr and LMlag are both statistically significant different from zero, we need to look at their robust counterparts. These robust counterparts are actually robust to the presence of the other “type” of autocorrelation. The robust version of the tests suggest that the lag model is the more likely alternative.</p>
+
 
 #### 2.2.3. Other Diagnostic Tests for OLS
 
@@ -401,7 +420,7 @@ bptest(ols) # heteroscedasticity (H1) /homoscedastic (H0)
 
 ```
 
-P-value is 0.001 so we reject H0 homoscedasticity which means we have heteroscedasticity.
+* p-value is 0.03 so we reject H0 homoscedasticity which means we have heteroscedasticity.
 
 ##### 2.2.3.2. Ramsey’s Test for Functional Form
 
@@ -411,7 +430,7 @@ H1: when non-linear variables (like powers of the variables) should be included 
 resettest(ols, power=2, type="regressor") 	
 ```
 
-p-value is 0.02517 so we reject H0, This indicates that the functional form is correct and our model does not suffer from omitted variables.
+* p-value is 0.03152 so we reject H0, This indicates that the functional form is correct and our model does not suffer from omitted variables.
 
 ##### 2.2.3.3. Moran Scatter Plot
 
@@ -425,7 +444,7 @@ moran.plot(zx$V1, cont.listw, pch=19, labels=as.character(spadata$NAME))
 
 ```
 
-We can see on the Moran scatter plot how our dependent variable's spatial correlation. We can also cluster negatives and positives next to each other and check how they correlate. In order to do that we took the residuals and cluster them and after that we used join count test.
+<p style="text-align:justify;">We can see on the Moran scatter plot how our dependent variable's spatial correlation. We can also cluster negatives and positives next to each other and check how they correlate. In order to do that we took the residuals and cluster them and after that we used join count test.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # test join.count for residuals (positive vs. negative)
@@ -434,7 +453,7 @@ resid<-factor(cut(res, breaks=c(-200, 0, 200), labels=c("negative","positive")))
 joincount.test(resid, cont.listw)
 ```
 
-We can see from the results that negative residuals has spatial correlation from other hand we don't have the statistically proof to say the same thing for the positive values. And we decided to use spatial models because according to Moran test there is a spatial correlation between residuals and there is spatial correlation between negative ones as well.
+<p style="text-align:justify;">We can see from the results that negative residuals has spatial correlation from other hand we don't have the statistically proof to say the same thing for the positive values. And we decided to use spatial models because according to Moran test there is a spatial correlation between residuals and there is spatial correlation between negative ones as well.</p>
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
