@@ -249,7 +249,7 @@ moranTest
 ### OLS (Benchmark model)
 
 ```{r}
-ols <- lm(DUI1802 ~ SALESPC + COLLENRP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP, data = spadata)
+ols <- lm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + NONWHITEP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata)
 summary(ols)
 ```
 
@@ -262,7 +262,7 @@ bptest(ols) # heteroscedasticity test (H1) /homoscedast…(H0)
 
 ```
 
-P-value is 0.20 so we cannot reject H0 homoscedasticity which means we have heteroscedasticity
+P-value is 0.001 so we reject H0 homoscedasticity which means we have homoscedasticity.
 
 
 
@@ -273,7 +273,7 @@ P-value is 0.20 so we cannot reject H0 homoscedasticity which means we have hete
 resettest(ols, power=2, type="regressor") 	
 ```
 
-p-value is 0.06 so we cannot reject H0, This indicates that the functional form is correct and our model does not suffer from omitted variables.
+p-value is 0.02517 so we reject H0, This indicates that the functional form is correct and our model does not suffer from omitted variables.
 
 ### Moran Correlation Test
 
