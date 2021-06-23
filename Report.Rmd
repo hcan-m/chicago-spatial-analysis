@@ -43,7 +43,7 @@ library(rgdal)
 library(shape)
 library(RColorBrewer)
 library(lmtest)
-library(spatialreg)
+#library(spatialreg)
 ```
 
 ```{r setup, include=FALSE}
@@ -577,5 +577,6 @@ LR.sarlm(SDEM_1, SLX_1)
 
 ## 3. CONCLUSION
 
+<p style="text-align:justify;">In this project, we tried to find the model to answer our research question that is how alcohol restrictions affect the offense related problems. First, we investigated the data set visually. After that, we started to build model model with a non-spatial one. First model was OLS. Moran's test for the OLS model showed that there is spatial effects of the residuals and spatial models should be developed. After that, we started to build different spatial models. We built SAR,XX,XX,XX models and tried to reach best model with highest significant variables and lowest AIC values. In the final stage, the best model is obtained with XXX model. The main intepratation from this model output is that, domestic violance is not affected by alcohol consumption or alcohol sales and sales points. Therefore, we verified the previous study.</p>
 
 
