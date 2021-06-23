@@ -209,7 +209,7 @@ variable<-spadata$SALESPC
 maxy<-300
 breaks<-c(0, 50, 100, 150, 200, 250, 300) # used in the legend 
 nclr<-7
-plotclr<-brewer.pal(nclr, "Reds") # from the RColorBrewer package 
+plotclr<-brewer.pal(nclr, "Greens") # from the RColorBrewer package 
 fillRed<-colorRampPalette(plotclr) # from the grDevices package 
 colcode<-fillRed(maxy)[round(variable) + 1] # fillRed is a function 
 plot(spadata, col=colcode , lwd=1,border="gray70") 
