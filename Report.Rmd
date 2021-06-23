@@ -155,28 +155,28 @@ summary(spadata)
 
 # converting factor variables to numeric variables
 
-# spadata$qtystores <- as.numeric(levels(spadata$qtystores))[spadata$qtystores]
-# spadata$PCI <- as.numeric(levels(spadata$PCI))[spadata$PCI]
-# spadata$COUNTMXBV <- as.numeric(levels(spadata$COUNTMXBV))[spadata$COUNTMXBV]
-# spadata$COUNTBKGR <- as.numeric(levels(spadata$COUNTBKGR))[spadata$COUNTBKGR]
-# spadata$TOTALPOP <- as.numeric(levels(spadata$TOTALPOP))[spadata$TOTALPOP]
-# spadata$POP18OV <- as.numeric(levels(spadata$POP18OV))[spadata$POP18OV]
-# spadata$LABFORCE <- as.numeric(levels(spadata$LABFORCE))[spadata$LABFORCE]
-# spadata$HHOLDS <- as.numeric(levels(spadata$HHOLDS))[spadata$HHOLDS]
-# spadata$POP25OV <- as.numeric(levels(spadata$POP25OV))[spadata$POP25OV]
-# spadata$POP16OV <- as.numeric(levels(spadata$POP16OV))[spadata$POP16OV]
+spadata$qtystores <- as.numeric(levels(spadata$qtystores))[spadata$qtystores]
+spadata$PCI <- as.numeric(levels(spadata$PCI))[spadata$PCI]
+spadata$COUNTMXBV <- as.numeric(levels(spadata$COUNTMXBV))[spadata$COUNTMXBV]
+spadata$COUNTBKGR <- as.numeric(levels(spadata$COUNTBKGR))[spadata$COUNTBKGR]
+spadata$TOTALPOP <- as.numeric(levels(spadata$TOTALPOP))[spadata$TOTALPOP]
+spadata$POP18OV <- as.numeric(levels(spadata$POP18OV))[spadata$POP18OV]
+spadata$LABFORCE <- as.numeric(levels(spadata$LABFORCE))[spadata$LABFORCE]
+spadata$HHOLDS <- as.numeric(levels(spadata$HHOLDS))[spadata$HHOLDS]
+spadata$POP25OV <- as.numeric(levels(spadata$POP25OV))[spadata$POP25OV]
+spadata$POP16OV <- as.numeric(levels(spadata$POP16OV))[spadata$POP16OV]
 
-
-spadata$qtystores <- as.numeric(spadata$qtystores)
-spadata$PCI <- as.numeric(spadata$PCI)
-spadata$COUNTMXBV <- as.numeric(spadata$COUNTMXBV)
-spadata$COUNTBKGR <- as.numeric(spadata$COUNTBKGR)
-spadata$TOTALPOP <- as.numeric(spadata$TOTALPOP)
-spadata$POP18OV <- as.numeric(spadata$POP18OV)
-spadata$LABFORCE <- as.numeric(spadata$LABFORCE)
-spadata$HHOLDS <- as.numeric(spadata$HHOLDS)
-spadata$POP25OV <- as.numeric(spadata$POP25OV)
-spadata$POP16OV <- as.numeric(spadata$POP16OV)
+# 
+# spadata$qtystores <- as.numeric(spadata$qtystores)
+# spadata$PCI <- as.numeric(spadata$PCI)
+# spadata$COUNTMXBV <- as.numeric(spadata$COUNTMXBV)
+# spadata$COUNTBKGR <- as.numeric(spadata$COUNTBKGR)
+# spadata$TOTALPOP <- as.numeric(spadata$TOTALPOP)
+# spadata$POP18OV <- as.numeric(spadata$POP18OV)
+# spadata$LABFORCE <- as.numeric(spadata$LABFORCE)
+# spadata$HHOLDS <- as.numeric(spadata$HHOLDS)
+# spadata$POP25OV <- as.numeric(spadata$POP25OV)
+# spadata$POP16OV <- as.numeric(spadata$POP16OV)
 
 ```
 Now, all the variables can be seen in the true formats in below table:
@@ -348,7 +348,7 @@ plot(all.nb, crds, add=TRUE)
 
 A measure of global spatial autocorrelation: Moran's I 
 
-```{r}
+```{r echo=FALSE}
 moranTest <- moran.test(spadata$SALESPC, cont.listw)
 moranTest
 ```
@@ -408,6 +408,11 @@ moran.plot(zx$V1, cont.listw, pch=19, labels=as.character(spadata$NAME))
 
 
 
+```{r eval=FALSE, include=FALSE}
+# test join.count for residuals (positive vs. negative)
+resid<-factor(cut(res, breaks=c(-100, 0, 100), labels=c("negative","positive")))
+joincount.test(resid, cont.listw)
+```
 
 
 ```{r eval=FALSE, include=FALSE}
