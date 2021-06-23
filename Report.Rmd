@@ -360,6 +360,12 @@ ols <- lm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + EN
 summary(ols)
 ```
 
+```{r}
+ols_I <- lm.morantest(ols, cont.listw)
+ols_LM <- lm.LMtests(ols, cont.listw, test = "all")
+print(ols_LM)
+```
+
 
 ```{r}
 
@@ -459,7 +465,7 @@ what next...
 
 
 ### SAR /SEM 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Estimation of spatial models with 3,2, or 1 spatial components
 
 # Manski model (full specification) - includes spatial lag of Y (rho), 
@@ -468,7 +474,8 @@ what next...
 GNS_1<-sacsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, type="sacmixed", method="LU")  # method="LU" speeds up computations
 summary(GNS_1)
 ```
-```{r}
+
+```{r message=FALSE, warning=FALSE}
 # SAC / SARAR model - includes spatial lag of Y, spatial error term
 SAC_1<-sacsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw)
 summary(SAC_1)
@@ -476,11 +483,11 @@ summary(SAC_1)
 # SEM - spatial error model
 # typically includes spatial error term only (with lambda coefficient)
 # option etype="emixed" activates spatial lags of X (with theta coeff.) # what makes spatial Durbin error model
-```{r}
+```{r message=FALSE, warning=FALSE}
 SDEM_1<-errorsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, etype="emixed") # with spatial lags of X
 summary(SDEM_1)
 ```
-```{r}
+```{r message=FALSE, warning=FALSE}
 SEM_1<-errorsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw) # no spat-lags of X
 summary(SEM_1)
 ```
@@ -488,18 +495,18 @@ summary(SEM_1)
 # SAR - spatial lag model
 # normally includes spatial lag of Y only (with rho coefficient)
 # option type="mixed" activates spatial lags of X (with theta coeff.)
-```{r}
+```{r message=FALSE, warning=FALSE}
 SDM_1<-lagsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw, type="mixed") # with spatial lags of X
 summary(SDM_1)
 ```
-```{r}
+```{r message=FALSE, warning=FALSE}
 SAR_1<-lagsarlm(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw) # no spatial lags of X
 summary(SAR_1)
 ```
 # from errorsarlm() library
 # an ‘lm’ model augmented with the spatially lagged RHS variables
 # RHS variables – right-hand side variables
-```{r}
+```{r message=FALSE, warning=FALSE}
 SLX_1<-lmSLX(SALESPC ~ DUI1802 + SOMECOLLP + BKGRTOABC + BAPTISTSP + BKGRTOMIX + ENTRECP + UNEMPP + PCI + URBANP + FVPTHH02, data = spadata, listw=cont.listw)
 summary(SLX_1)
 ```
@@ -507,7 +514,7 @@ summary(SLX_1)
 # H0 – restricted (narrower) model is better
 # H1 – unrestricted (wider) model is better
 # df in chi2 is the number of restricted parameters
-```{r}
+```{r message=FALSE, warning=FALSE}
 LR.sarlm(GNS_1, SDM_1)
 LR.sarlm(GNS_1, SDEM_1)
 LR.sarlm(GNS_1, SLX_1)
@@ -515,16 +522,14 @@ LR.sarlm(SDM_1, SAR_1)
 LR.sarlm(SDM_1, SEM_1)
 LR.sarlm(SDM_1, SLX_1)
 LR.sarlm(SDEM_1, SLX_1)
-lrtest(model.lm, SLX_1)
+#lrtest(model.lm, SLX_1)
 
 ```
 
-```{r}
-
-str(slot(spadata,"data"))
+### Direct and Indirect Impacts
 
 
-```
+
 ### Diagnostic Tests
 
 
