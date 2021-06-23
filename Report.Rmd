@@ -335,7 +335,7 @@ plot(all.nb, crds, add=TRUE)
 
 A measure of global spatial autocorrelation: Moran's I 
 
-```{r}
+```{r echo=FALSE}
 moranTest <- moran.test(spadata$SALESPC, cont.listw)
 moranTest
 ```
@@ -375,7 +375,7 @@ H0: No spatial correlation in the residuals
 
 
 ```{r}
-lmMoranTest <- lm.morantest(ols,nb2listw(nbrqueen)) # are residuals spatially random?
+lmMoranTest <- lm.morantest(ols,cont.listw) # are residuals spatially random?
 lmMoranTest
 
 ```
@@ -389,7 +389,7 @@ x<-spadata$DUI1802 # variable selection
 zx<-as.data.frame(scale(x))  #standardization of variable
 
 # Moran scatterplot – automatic version
-moran.plot(zx$V1, nb2listw(nbrqueen), pch=19, labels=as.character(spadata$NAME))
+moran.plot(zx$V1, cont.listw, pch=19, labels=as.character(spadata$NAME))
 
 ```
 
@@ -397,7 +397,7 @@ moran.plot(zx$V1, nb2listw(nbrqueen), pch=19, labels=as.character(spadata$NAME))
 ```{r eval=FALSE, include=FALSE}
 # test join.count for residuals (positive vs. negative)
 resid<-factor(cut(res, breaks=c(-100, 0, 100), labels=c("negative","positive")))
-joincount.test(resid, nb2listw(nbrqueen))
+joincount.test(resid, cont.listw)
 ```
 
 
